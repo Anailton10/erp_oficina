@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Clientes</h2>
+
+<a href="#" class="btn btn-primary mb-3">
+    Novo Cliente
+</a>
+
+<table class="table table-dark table-striped">
+
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for client in clients %}
+
+        <tr>
+            <td>{{ client.name }}</td>
+            <td>{{ client.phone_number }}</td>
+
+            <td>
+                <a href="{% url 'clients:client_detail' client.id %}" class="btn btn-sm btn-info">
+                    Ver
+                </a>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

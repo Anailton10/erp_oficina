@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Detalhes do Veículo
+{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Veículo</h2>
+
+  <div class="card bg-dark text-light mb-4">
+    <div class="card-body">
+      <h4>{{ vehicle.vehicle_model }}</h4>
+
+      {% if vehicle.plate %}
+        <p>
+          <strong>Placa:</strong> {{ vehicle.plate }}
+        </p>
+      {% else %}
+        <p>
+          <strong>Placa:</strong> Não informada
+        </p>
+      {% endif %}
+      {% if vehicle.year %}
+        <p>
+          <strong>Ano:</strong> {{ vehicle.vehicle_year }}
+        </p>
+      {% endif %}
+        <p>
+            <strong>Marca:</strong> {{ vehicle.vehicle_brand }}
+        </p>
+    </div>
+  </div>
+
+  <h4 class="mb-3">Cliente</h4>
+
+  <div class="card bg-dark text-light">
+    <div class="card-body">
+      <p>
+        <strong>Nome:</strong> {{ vehicle.client.name }}
+      </p>
+
+      <p>
+        <strong>Telefone:</strong> {{ vehicle.client.phone_number }}
+      </p>
+
+      <a href="{% url 'clients:client_detail' vehicle.client.id %}" class="btn btn-info btn-sm">Voltar para cliente</a>
+    </div>
+  </div>
+{% endblock %}
