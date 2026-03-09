@@ -10,13 +10,34 @@ class ListClientsView(generic.ListView):
     template_name = 'clients/list_clients.html'
     context_object_name = 'clients'
 
+    def get_queryset(self):
+        # pegando todos os clientes
+        queryset = Client.objects.all()
+        
+        # lendo parametro de filtro da URL "active"
+        client_is_active = self.request.GET.get('active')
+
+        # Filtando os clientes inativos
+        if client_is_active == 'false':
+            queryset = queryset.filter(soft_deleted=True)
+        
+        # Retornando os clientes ativos
+        else:
+            queryset = queryset.filter(soft_deleted=False)
+        
+        return queryset
+
 
 class ListVehiclesView(generic.ListView):
     model = Vehicle
     template_name = 'vehicles/list_vehicles.html'
     context_object_name = 'vehicles'
 
-
+    def get_queryset(self):
+        # Filtrando os veículos pelo status do cliente
+        # Vai mostrar apenas os veículos que o cliente não está inativo
+        return Vehicle.objects.filter(soft_deleted=False, client__soft_deleted=False)
+        
 class ClientDetailView(generic.DetailView):
     model = Client
     template_name = 'clients/detail_clients.html'
