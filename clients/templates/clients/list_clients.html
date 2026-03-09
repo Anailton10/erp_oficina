@@ -8,39 +8,48 @@ Clientes
 
 <h2 class="mb-4">Clientes</h2>
 
-<a href="#" class="btn btn-primary mb-3">
+<a href="{% url 'clients:create_client' %}" class="btn btn-primary mb-3">
     Novo Cliente
 </a>
 
 <table class="table table-dark table-striped">
 
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Telefone</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Telefone</th>
+<th>Ações</th>
+</tr>
+</thead>
 
-    <tbody>
+<tbody>
 
-        {% for client in clients %}
+{% for client in clients %}
 
-        <tr>
-            <td>{{ client.name }}</td>
-            <td>{{ client.phone_number }}</td>
+<tr>
 
-            <td>
-                <a href="{% url 'clients:client_detail' client.id %}" class="btn btn-sm btn-info">
-                    Ver
-                </a>
-            </td>
+<td>{{ client.name }}</td>
+<td>{{ client.phone_number }}</td>
 
-        </tr>
+<td>
 
-        {% endfor %}
+<a href="{% url 'clients:client_detail' client.id %}" class="btn btn-sm btn-info">
+Ver
+</a>
 
-    </tbody>
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="3">Nenhum cliente cadastrado</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
 
 </table>
 
