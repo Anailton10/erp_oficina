@@ -1,5 +1,7 @@
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import View, generic
 
 from .forms import ClientForm, VehicleForm
 from .models import Client, Vehicle
@@ -19,11 +21,11 @@ class ListClientsView(generic.ListView):
 
         # Filtando os clientes inativos
         if client_is_active == 'false':
-            queryset = queryset.filter(soft_deleted=True)
+            queryset = queryset.filter(is_active=False)
         
         # Retornando os clientes ativos
         else:
-            queryset = queryset.filter(soft_deleted=False)
+            queryset = queryset.filter(is_active=True)
         
         return queryset
 
@@ -35,8 +37,8 @@ class ListVehiclesView(generic.ListView):
 
     def get_queryset(self):
         # Filtrando os veículos pelo status do cliente
-        # Vai mostrar apenas os veículos que o cliente não está inativo
-        return Vehicle.objects.filter(soft_deleted=False, client__soft_deleted=False)
+        # Retorna apenas os veículos cujo cliente está ativo
+        return Vehicle.objects.filter(is_active=True, client__is_active=True)
         
 class ClientDetailView(generic.DetailView):
     model = Client
@@ -76,4 +78,16 @@ class CreateVehicleView(generic.CreateView):
     def get_success_url(self):
         client_id = self.kwargs['client_id']
         return reverse_lazy('clients:client_detail', kwargs={'pk': client_id})
-    
+
+
+class ClientDeleteView(View):
+    # Recebe(request) o ID(PK) do cliente vindo da URL 
+    def post(self, request, pk):
+        # Busca o cliente pelo ID(PK) ou retorna 404 se não encontrado
+        client = get_object_or_404(Client, pk=pk)
+        # Chama o método de exclusão lógica do cliente, que também desativa os veículos associados
+        client.soft_delete()
+
+        messages.success(request, f"Cliente {client.name} removido com sucesso.")
+        # Redireciona para a lista de clientes após a exclusão
+        return redirect('clients:list_clients')

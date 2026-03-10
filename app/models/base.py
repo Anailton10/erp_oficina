@@ -4,7 +4,7 @@ from django.db import models
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    soft_deleted = models.BooleanField(default=False) # Adiciona o campo de soft delete
+    is_active = models.BooleanField(default=True) # Adiciona o campo de status ativo
 
     class Meta:
         abstract = True
