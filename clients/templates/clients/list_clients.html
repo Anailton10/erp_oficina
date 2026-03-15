@@ -37,7 +37,7 @@
           <td>
             <a href="{% url 'clients:client_detail' client.id %}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
 
-            <a href="#" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'clients:update_client' client.id %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
 
             <form action="{% url 'clients:client_delete' client.id %}" method="post" class="d-inline">
               {% csrf_token %}

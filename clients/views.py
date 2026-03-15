@@ -91,6 +91,21 @@ class CreateVehicleView(generic.CreateView):
         return reverse_lazy('clients:client_detail', kwargs={'pk': client_id})
 
 
+class UpdateClientView(generic.UpdateView):
+    model = Client
+    template_name = 'clients/update_clients.html'
+    form_class = ClientForm
+    success_url = reverse_lazy('clients:list_clients')
+
+class UpdateVehicleView(generic.UpdateView):
+    model = Vehicle
+    template_name = 'vehicles/update_vehicles.html'
+    form_class = VehicleForm
+
+    def get_success_url(self):
+        client_id = self.object.client.id
+        return reverse_lazy('clients:client_detail', kwargs={'pk': client_id})
+    
 class ClientDeleteView(View):
     # Recebe(request) o ID(PK) do cliente vindo da URL 
     def post(self, request, pk):
