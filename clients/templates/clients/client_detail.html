@@ -29,7 +29,7 @@
         </div>
 
         <div>
-          <a href="{% url 'clients:update_client' client.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+          <a href="{% url 'clients:client_update' client.id %}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i> Editar</a>
         </div>
       </div>
     </div>
@@ -69,7 +69,7 @@
             <div class="btn-group">
               <a href="{% url 'clients:vehicle_detail' vehicle.id %}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
 
-              <a href="{% url 'clients:update_vehicle' vehicle.id %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+              <a href="{% url 'clients:vehicle_update' vehicle.id %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
 
               <form action="{% url 'clients:vehicle_delete' vehicle.pk %}" method="post" class="d-inline">
                 {% csrf_token %}
@@ -87,5 +87,5 @@
     </tbody>
   </table>
 
-  <a href="{% url 'clients:create_vehicle' client.id %}" class="btn btn-primary"><i class="bi bi-plus"></i> Adicionar Veículo</a>
+  <a href="{% url 'clients:vehicle_create' client.id %}" class="btn btn-primary"><i class="bi bi-plus"></i> Adicionar Veículo</a>
 {% endblock %}

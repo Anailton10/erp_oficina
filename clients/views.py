@@ -9,7 +9,7 @@ from .models import Client, Vehicle
 
 class ListClientsView(generic.ListView):
     model = Client
-    template_name = 'clients/list_clients.html'
+    template_name = 'clients/clients_list.html'
     context_object_name = 'clients'
 
     def get_queryset(self):
@@ -32,7 +32,7 @@ class ListClientsView(generic.ListView):
 
 class ListVehiclesView(generic.ListView):
     model = Vehicle
-    template_name = 'vehicles/list_vehicles.html'
+    template_name = 'vehicles/vehicles_list.html'
     context_object_name = 'vehicles'
 
     def get_queryset(self):
@@ -42,7 +42,7 @@ class ListVehiclesView(generic.ListView):
         
 class ClientDetailView(generic.DetailView):
     model = Client
-    template_name = 'clients/detail_clients.html'
+    template_name = 'clients/client_detail.html'
 
     def get_context_data(self, **kwargs):
 
@@ -63,18 +63,18 @@ class ClientDetailView(generic.DetailView):
 
 class VehicleDetailView(generic.DetailView):
     model = Vehicle
-    template_name = 'vehicles/detail_vehicles.html'
+    template_name = 'vehicles/vehicle_detail.html'
 
 class CreateClientView(generic.CreateView):
     model = Client
-    template_name = 'clients/create_clients.html'
+    template_name = 'clients/client_create.html'
     form_class = ClientForm
-    success_url = reverse_lazy('clients:list_clients')
+    success_url = reverse_lazy('clients:clients_list')
 
 
 class CreateVehicleView(generic.CreateView):
     model = Vehicle
-    template_name = 'vehicles/create_vehicles.html'
+    template_name = 'vehicles/vehicles_create.html'
     form_class = VehicleForm
 
     def form_valid(self, form):
@@ -93,13 +93,13 @@ class CreateVehicleView(generic.CreateView):
 
 class UpdateClientView(generic.UpdateView):
     model = Client
-    template_name = 'clients/update_clients.html'
+    template_name = 'clients/client_update.html'
     form_class = ClientForm
-    success_url = reverse_lazy('clients:list_clients')
+    success_url = reverse_lazy('clients:clients_list')
 
 class UpdateVehicleView(generic.UpdateView):
     model = Vehicle
-    template_name = 'vehicles/update_vehicles.html'
+    template_name = 'vehicles/vehicle_update.html'
     form_class = VehicleForm
 
     def get_success_url(self):
@@ -117,7 +117,7 @@ class ClientDeleteView(View):
         # Exibe uma mensagem de sucesso para o usuário
         messages.success(request, f"Cliente {client.name} removido com sucesso.")
         # Redireciona para a lista de clientes após a exclusão
-        return redirect('clients:list_clients')
+        return redirect('clients:clients_list')
 
 class VehicleDeleteView(View):
     # Recebe(request) o ID(PK) do veículo vindo da URL 

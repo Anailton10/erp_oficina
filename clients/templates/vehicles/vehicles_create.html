@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Novo Veículo
+{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Novo Veículo</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label>Marca</label>
+      {{ form.vehicle_brand }}
+    </div>
+
+    <div class="mb-3">
+      <label>Modelo</label>
+      {{ form.vehicle_model }}
+    </div>
+
+    <div class="mb-3">
+      <label>Ano</label>
+      {{ form.vehicle_year }}
+    </div>
+
+    <div class="mb-3">
+      <label>Cliente</label>
+      {{ form.client_name }}
+    </div>
+
+    <button class="btn btn-success">Salvar</button>
+  </form>
+{% endblock %}
