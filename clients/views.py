@@ -1,5 +1,5 @@
-from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View, generic
 
@@ -47,7 +47,18 @@ class ClientDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        context['vehicles'] = self.object.vehicles.all()
+
+        vehicles = self.object.vehicles.all()
+
+        vehicle_is_active = self.request.GET.get('active')
+
+        if vehicle_is_active == 'false':
+            vehicles = vehicles.filter(is_active=False)
+        else:
+            vehicles = vehicles.filter(is_active=True)
+
+        context['vehicles'] = vehicles
+
         return context
 
 class VehicleDetailView(generic.DetailView):
@@ -88,6 +99,23 @@ class ClientDeleteView(View):
         # Chama o método de exclusão lógica do cliente, que também desativa os veículos associados
         client.soft_delete()
 
+        # Exibe uma mensagem de sucesso para o usuário
         messages.success(request, f"Cliente {client.name} removido com sucesso.")
         # Redireciona para a lista de clientes após a exclusão
         return redirect('clients:list_clients')
+
+class VehicleDeleteView(View):
+    # Recebe(request) o ID(PK) do veículo vindo da URL 
+    def post(self, request, vehicle_id):
+        # Busca o veículo pelo ID(PK) ou retorna 404 se não encontrado
+        vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
+
+        # Armazena o ID do cliente para redirecionamento após a exclusão
+        client_id = vehicle.client.id  
+        # Chama o método de exclusão lógica do veículo
+        vehicle.soft_delete()
+
+        # Exibe uma mensagem de sucesso para o usuário
+        messages.success(request, f"Veículo {vehicle.vehicle_model} removido com sucesso.")
+        # Redireciona para a lista de veículos após a exclusão
+        return redirect('clients:client_detail', pk=client_id)

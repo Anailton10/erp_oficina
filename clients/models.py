@@ -4,6 +4,7 @@ from app.models.base import BaseModel
 
 
 class Client(BaseModel):
+    # TODO: Garantir sincronização do status dos veículos quando o cliente mudar de status
     """
     Representa um cliente da oficina.
 
@@ -48,6 +49,13 @@ class Vehicle(BaseModel):
     vehicle_model = models.CharField(max_length=100, blank=True, null=True)
     vehicle_brand = models.CharField(max_length=100, blank=True, null=True)
     vehicle_year = models.IntegerField(blank=True, null=True)
+    # TODO: Adiconar coluna de placa e garantir que seja única
+
+    def soft_delete(self):
+        """Realiza a exclusão do veiculo, deixando inativo."""
+
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return f"{self.vehicle_brand} {self.vehicle_model} ({self.vehicle_year})"
