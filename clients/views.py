@@ -78,6 +78,7 @@ class CreateVehicleView(generic.CreateView):
     form_class = VehicleForm
 
     def form_valid(self, form):
+        # O ID do cliente que foi passado na URL para associar
         client_id = self.kwargs['client_id']
         client = Client.objects.get(id=client_id)
 

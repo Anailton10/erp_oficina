@@ -71,6 +71,8 @@
 
               <a href="{% url 'clients:vehicle_update' vehicle.id %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
 
+              <a href="{% url 'create_order' client.id vehicle.id %}" class="btn btn-sm btn-secondary"><i class="bi bi-clipboard"></i></a>
+
               <form action="{% url 'clients:vehicle_delete' vehicle.pk %}" method="post" class="d-inline">
                 {% csrf_token %}
 
