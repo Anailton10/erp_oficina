@@ -50,11 +50,15 @@
     <h5 class="mb-4">ERP Oficina</h5>
 
     <a href="{% url 'clients:clients_list' %}">
-        <i class="bi bi-people"></i> Clientes
+        <i class="bi bi-people"></i>  Clientes
+    </a>
+    
+    <a href="{% url 'orders:order_list' %}">
+        <i class="bi bi-car-front"></i>  Ordem de Serviço
     </a>
 
-    <a href="{% url 'clients:vehicles_list' %}">
-        <i class="bi bi-car-front"></i> Veículos
+    <a href="{% url 'products:product_list' %}">
+        <i class="bi bi-car-front"></i>  Catálogo
     </a>
 
 </div>

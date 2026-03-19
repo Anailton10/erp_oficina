@@ -13,7 +13,7 @@ class OrderForm(forms.ModelForm):
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        fields = ['order', 'quantity', 'unit_price']
+        fields = ['product', 'order', 'quantity', 'unit_price', ]
 
 
 # Cria um formset para os itens do pedido, permitindo adicionar múltiplos itens em um único formulário de pedido

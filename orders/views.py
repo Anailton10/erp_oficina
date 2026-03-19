@@ -1,9 +1,10 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views import View
+from django.views import View,generic
 
 from clients.models import Client, Vehicle
 
+from .models import Order
 from .forms import OrderForm, OrderItemFormSet
 
 
@@ -53,3 +54,8 @@ class OrderCreateView(View):
         }
 
         return render(request, 'orders/order_form.html', context)
+
+class OrderListView(generic.ListView):
+    model = Order
+    template_name = 'orders/order_list.html'
+    context_object_name = 'orders'

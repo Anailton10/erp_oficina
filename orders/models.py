@@ -1,6 +1,9 @@
+from ast import arg
+
 from django.db import models
 
 from clients.models import Client, Vehicle
+from products.models import CatalogItem
 
 
 class Order(models.Model):
@@ -42,9 +45,19 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order,related_name='items',on_delete=models.CASCADE)
-    # Product = models.ForeignKey(Client, on_delete=models.PROTECT)
+    product = models.ForeignKey(CatalogItem, on_delete=models.PROTECT, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def total_price(self):
+        return self.quantity * self.unit_price
+
+    # Sobrescreve o método save para definir o preço unitário com base no produto selecionado, se não for fornecido
+    def save(self, *args, **kwargs):
+        if self.product and not self.unit_price:
+            self.unit_price = self.product.price
+
+        super().save(*args, **kwargs)
+        
     def __str__(self):
-        return f"{self.name} - {self.price}"
+        return f"{self.product.name} - {self.product.price}"
