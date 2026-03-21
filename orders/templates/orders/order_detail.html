@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes da OS{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Ordem de Serviço {{ order.number }}</h2>
+
+  <div class="card bg-dark text-light mb-4">
+    </div>
+
+  <div id="order-items">
+    {% include 'orders/partials/_order_items.html' %}
+  </div>
+
+  <div class="card bg-dark text-light mb-4">
+    <div class="card-body text-end">
+      <h4 id="order-total">Total: R$ {{ order.total|floatformat:2 }}</h4>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdicionarItem">Adicionar item</button>
+    <a href="#" class="btn btn-warning"><i class="bi bi-pencil"></i> Editar</a>
+    <a href="#" class="btn btn-danger"><i class="bi bi-trash"></i> Excluir</a>
+    <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Voltar</a>
+  </div>
+
+  {% include 'orders/partials/_add_item_modal.html' %}
+  {% include 'orders/partials/_add_item_scripts.html' %}
+
+{% endblock %}

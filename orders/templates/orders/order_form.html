@@ -1,85 +1,64 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Nova Ordem de Serviço
-{% endblock %}
+{% block title %}Nova Ordem de Serviço{% endblock %}
 
 {% block content %}
-
-<h2 class="mb-4">Nova Ordem de Serviço</h2>
-
-
-<!-- Informações do cliente e veículo -->
-<div class="card bg-dark text-light mb-4">
-    <div class="card-body">
-
-        <p class="mb-1">
-            <strong>Cliente:</strong> {{ client.name }}
-        </p>
-
-        <p class="mb-0">
-            <strong>Veículo:</strong> {{ vehicle.vehicle_model }}
-        </p>
-
-    </div>
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="mb-0">Nova Ordem de Serviço</h2>
+    <small class="text-muted">Preencha os dados básicos da ordem</small>
+  </div>
 </div>
 
+<form method="post" id="order-form">
+  {% csrf_token %}
 
-<form method="post">
-
-    {% csrf_token %}
-
-    <!-- Dados principais da OS -->
-    <div class="card bg-dark text-light mb-4">
-
-        <div class="card-body">
-
-            <h5 class="mb-3">Dados da Ordem</h5>
-
-            {{ form.as_p }}
-
+  <div class="card mb-4">
+    <div class="card-header">
+      <strong class="small">Cliente e veículo</strong>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p class="text-muted small mb-1">Cliente</p>
+          <p class="fw-semibold mb-0">{{ client.name }}</p>
+          <small class="text-muted">{{ client.email }}</small>
         </div>
-
-    </div>
-
-
-    <!-- Itens da OS -->
-    <div class="card bg-dark text-light mb-4">
-
-        <div class="card-body">
-
-            <h5 class="mb-3">Itens da Ordem</h5>
-
-            {{ formset.management_form }}
-
-            {% for form in formset %}
-
-                <div class="border rounded p-3 mb-3 bg-secondary bg-opacity-10">
-
-                    {{ form.as_p }}
-
-                </div>
-
-            {% endfor %}
-
+        <div class="col-md-6">
+          <p class="text-muted small mb-1">Veículo</p>
+          <p class="fw-semibold mb-0">{{ vehicle.vehicle_model }}</p>
+          <small class="text-muted">{{ vehicle.plate }} · {{ vehicle.year }}</small>
         </div>
-
+      </div>
     </div>
+  </div>
 
-
-    <!-- Botões -->
-    <div class="d-flex gap-2">
-
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-check-lg"></i> Salvar
-        </button>
-
-        <a href="{% url 'clients:client_detail' client.id %}" class="btn btn-secondary">
-            Cancelar
-        </a>
-
+  <div class="card mb-4">
+    <div class="card-header">
+      <strong class="small">Dados da ordem</strong>
     </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label small">Status</label>
+          {{ form.status }}
+          {% if form.status.errors %}
+            <div class="text-danger small mt-1">{{ form.status.errors }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-9">
+          <label class="form-label small">Descrição</label>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div class="d-flex justify-content-end gap-2 mt-2">
+    <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-primary">Criar ordem</button>
+  </div>
 </form>
-
 {% endblock %}
