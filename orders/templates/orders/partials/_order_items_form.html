@@ -1,0 +1,174 @@
+{{ formset.management_form }}
+
+<div id="items-container">
+  {% for form in formset %}
+    <div class="item-row border rounded p-3 mb-3 bg-light" id="item-{{ forloop.counter0 }}">
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger py-1 small mb-2">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="row g-2 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label small">Produto / Serviço</label>
+          {{ form.product }}
+          {% if form.product.errors %}
+            <div class="text-danger small mt-1">{{ form.product.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label small">Qtd</label>
+          {{ form.quantity }}
+          {% if form.quantity.errors %}
+            <div class="text-danger small mt-1">{{ form.quantity.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label small">Preço unit. (R$)</label>
+          {{ form.unit_price }}
+          {% if form.unit_price.errors %}
+            <div class="text-danger small mt-1">{{ form.unit_price.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label small">Subtotal</label>
+          <p class="fw-semibold mb-0 pt-1 subtotal-display" id="subtotal-{{ forloop.counter0 }}">R$ 0,00</p>
+        </div>
+
+        <div class="col-md-1 text-end">
+          {% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+          <button type="button" class="btn btn-sm btn-outline-danger"
+                  onclick="removeItem('item-{{ forloop.counter0 }}')">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<script>
+const TOTAL_FORMS_INPUT = document.querySelector('[name="items-TOTAL_FORMS"]');
+let formIndex = parseInt(TOTAL_FORMS_INPUT.value);
+
+const catalogItems = [
+  {% for item in catalog_items %}
+  { id: {{ item.id }}, name: "{{ item.name }}", price: {{ item.price }}, type: "{{ item.type }}", display: "{{ item.get_type_display }}" },
+  {% endfor %}
+];
+
+function buildSelectHTML(name) {
+  let opts = `<option value="">Selecione...</option>`;
+  catalogItems.forEach(i => {
+    opts += `<option value="${i.id}" data-price="${i.price}" data-type="${i.type}">[${i.display}] ${i.name} — R$ ${parseFloat(i.price).toFixed(2).replace('.', ',')}</option>`;
+  });
+  return `<select name="${name}" class="form-select catalog-select" onchange="onCatalogChange(this)">${opts}</select>`;
+}
+
+function onCatalogChange(select) {
+  const idx = select.closest('.item-row').id.replace('item-', '');  // pega o index pelo pai
+  const selectedId = parseInt(select.value);
+  const item = catalogItems.find(i => i.id === selectedId);
+  if (!item) return;
+  const priceInput = document.querySelector(`.price-input[data-index="${idx}"]`);
+  if (priceInput) {
+    priceInput.value = parseFloat(item.price).toFixed(2);
+    updateSubtotal(idx);
+  }
+}
+
+function updateSubtotal(idx) {
+  const qty = parseFloat(document.querySelector(`.qty-input[data-index="${idx}"]`)?.value) || 0;
+  const price = parseFloat(document.querySelector(`.price-input[data-index="${idx}"]`)?.value) || 0;
+  const sub = qty * price;
+  const el = document.getElementById(`subtotal-${idx}`);
+  if (el) el.textContent = 'R$ ' + sub.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  updateGrandTotal();
+}
+
+function updateGrandTotal() {
+  let total = 0;
+  document.querySelectorAll('.item-row').forEach(row => {
+    const idx = row.id.replace('item-', '');
+    const qty = parseFloat(document.querySelector(`.qty-input[data-index="${idx}"]`)?.value) || 0;
+    const price = parseFloat(document.querySelector(`.price-input[data-index="${idx}"]`)?.value) || 0;
+    total += qty * price;
+  });
+  document.getElementById('grand-total').textContent =
+    'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  const rows = document.querySelectorAll('.item-row').length;
+  document.getElementById('item-count-badge').textContent = rows + (rows === 1 ? ' item' : ' itens');
+}
+
+function addItem() {
+  const prefix = TOTAL_FORMS_INPUT.name.replace('-TOTAL_FORMS', '');
+  const idx = formIndex;
+  const div = document.createElement('div');
+  div.className = 'item-row border rounded p-3 mb-3 bg-light';
+  div.id = `item-${idx}`;
+  div.innerHTML = `
+    <div class="row g-2 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label small">Produto / Serviço</label>
+        ${buildSelectHTML(`${prefix}-${idx}-product`)}
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Qtd</label>
+        <input type="number" name="${prefix}-${idx}-quantity" value="1" min="1"
+               class="form-control qty-input" data-index="${idx}"
+               oninput="updateSubtotal(${idx})">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Preço unit. (R$)</label>
+        <input type="number" name="${prefix}-${idx}-unit_price" value="" step="0.01" min="0"
+               class="form-control price-input" data-index="${idx}"
+               oninput="updateSubtotal(${idx})">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Subtotal</label>
+        <p class="fw-semibold mb-0 pt-1" id="subtotal-${idx}">R$ 0,00</p>
+      </div>
+      <div class="col-md-1 text-end">
+        <button type="button" class="btn btn-sm btn-outline-danger"
+                onclick="removeItem('item-${idx}')">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>`;
+
+  // injeta data-index no select recém criado
+  const sel = div.querySelector('.catalog-select');
+  if (sel) sel.dataset.index = idx;
+
+  document.getElementById('items-container').appendChild(div);
+  formIndex++;
+  TOTAL_FORMS_INPUT.value = formIndex;
+  updateGrandTotal();
+}
+
+function removeItem(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (document.querySelectorAll('.item-row').length <= 1) return;
+  el.remove();
+  updateGrandTotal();
+}
+
+// Injeta data-index nos widgets renderizados pelo Django e inicializa subtotais
+document.querySelectorAll('.item-row').forEach(row => {
+  const idx = row.id.replace('item-', '');
+  const sel = row.querySelector('.catalog-select');
+  const qty = row.querySelector('.qty-input');
+  const price = row.querySelector('.price-input');
+  if (qty) qty.dataset.index = idx;
+  if (price) price.dataset.index = idx;
+
+  // dispara o preenchimento do preço se já tiver um item selecionado
+  if (sel && sel.value) {
+    onCatalogChange(sel);
+  }
+
+  updateSubtotal(idx);
+});
+</script>
