@@ -22,11 +22,7 @@ class OrderItemForm(forms.ModelForm):
 
     class Meta:
         model = OrderItem
-<<<<<<< Updated upstream
-        fields = ['order', 'quantity', 'unit_price']
-=======
         fields = ['product', 'quantity', 'unit_price']
->>>>>>> Stashed changes
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
