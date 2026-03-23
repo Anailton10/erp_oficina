@@ -1,0 +1,16 @@
+name,description,price,stock,type
+Troca de óleo,Óleo + mão de obra,80.00,,SERVICO
+Revisão geral,Revisão completa da moto,150.00,,SERVICO
+Alinhamento,Ajuste de direção,50.00,,SERVICO
+Balanceamento,Ajuste de rodas,40.00,,SERVICO
+Limpeza de carburador,Limpeza completa,70.00,,SERVICO
+Pastilha de freio dianteira,Pastilha para freio,45.00,20,PRODUTO
+Pastilha de freio traseira,Pastilha traseira,40.00,15,PRODUTO
+Óleo 10W30,Óleo para motor,30.00,50,PRODUTO
+Filtro de ar,Filtro esportivo,25.00,30,PRODUTO
+Vela de ignição,Vela padrão,15.00,40,PRODUTO
+Corrente de transmissão,Corrente reforçada,120.00,10,PRODUTO
+Cabo de embreagem,Cabo resistente,35.00,25,PRODUTO
+Bateria 12V,Bateria moto,180.00,8,PRODUTO
+Pneu dianteiro,Pneu aro 18,200.00,12,PRODUTO
+Pneu traseiro,Pneu aro 18,220.00,10,PRODUTO
