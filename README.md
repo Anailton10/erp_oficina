@@ -67,6 +67,14 @@ Run database migrations
 ```bash
 python manage.py migrate
 ```
+### Database Seed (Dados iniciais)
+
+O projeto possui comandos de seed para popular o banco com dados básicos (clientes, veículos e catálogo de produtos/serviços).
+
+Run command for seed Database
+``` bash
+python manage.py seed
+```
 
 Start the server
 
@@ -77,7 +85,7 @@ python manage.py runserver
 
 - [x] Cadastro de clientes
 - [x] Cadastro de veículos
-- [ ] Cadastro de produtos e serviços
+- [x] Cadastro de produtos e serviços
 - [ ] Ordens de serviço completas
 - [ ] Controle de estoque
 - [ ] Geração de PDF da OS
