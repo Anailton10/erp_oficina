@@ -1,0 +1,4 @@
+[flake8]
+
+exclude = vemv
+ignore = E501
