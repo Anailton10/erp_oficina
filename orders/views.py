@@ -1,10 +1,13 @@
 import json
+
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View, generic
+
 from clients.models import Client, Vehicle
 from products.models import CatalogItem
-from .forms import OrderForm, OrderItemForm
+
+from .forms import OrderForm
 from .models import Order, OrderItem
 
 
@@ -15,11 +18,15 @@ class OrderCreateView(View):
         if vehicle.client != client:
             raise Http404("Veículo não pertence ao cliente")
         form = OrderForm()
-        return render(request, 'orders/order_form.html', {
-            'form': form,
-            'client': client,
-            'vehicle': vehicle,
-        })
+        return render(
+            request,
+            "orders/order_form.html",
+            {
+                "form": form,
+                "client": client,
+                "vehicle": vehicle,
+            },
+        )
 
     def post(self, request, client_id, vehicle_id):
         client = get_object_or_404(Client, id=client_id)
@@ -30,28 +37,32 @@ class OrderCreateView(View):
             order.client = client
             order.vehicle = vehicle
             order.save()
-            return redirect('orders:order_detail', pk=order.pk)
-        return render(request, 'orders/order_form.html', {
-            'form': form,
-            'client': client,
-            'vehicle': vehicle,
-        })
+            return redirect("orders:order_detail", pk=order.pk)
+        return render(
+            request,
+            "orders/order_form.html",
+            {
+                "form": form,
+                "client": client,
+                "vehicle": vehicle,
+            },
+        )
 
 
 class OrderListView(generic.ListView):
     model = Order
-    template_name = 'orders/order_list.html'
-    context_object_name = 'orders'
+    template_name = "orders/order_list.html"
+    context_object_name = "orders"
 
 
 class OrderDetailView(generic.DetailView):
     model = Order
-    template_name = 'orders/order_detail.html'
-    context_object_name = 'order'
+    template_name = "orders/order_detail.html"
+    context_object_name = "order"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['catalog_items'] = CatalogItem.objects.all().order_by('type', 'name')
+        context["catalog_items"] = CatalogItem.objects.all().order_by("type", "name")
         return context
 
 
@@ -60,13 +71,13 @@ class AddOrderItemView(View):
         try:
             order = Order.objects.get(id=order_id)
             data = json.loads(request.body)
-            product = CatalogItem.objects.get(id=data['product_id'])
+            product = CatalogItem.objects.get(id=data["product_id"])
             OrderItem.objects.create(
                 order=order,
                 product=product,
-                quantity=int(data['quantity']),
-                unit_price=data['unit_price'],
+                quantity=int(data["quantity"]),
+                unit_price=data["unit_price"],
             )
-            return JsonResponse({'success': True})
+            return JsonResponse({"success": True})
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+            return JsonResponse({"success": False, "error": str(e)})

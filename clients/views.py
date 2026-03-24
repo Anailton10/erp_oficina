@@ -9,106 +9,111 @@ from .models import Client, Vehicle
 
 class ListClientsView(generic.ListView):
     model = Client
-    template_name = 'clients/clients_list.html'
-    context_object_name = 'clients'
+    template_name = "clients/clients_list.html"
+    context_object_name = "clients"
 
     def get_queryset(self):
         # pegando todos os clientes
         queryset = Client.objects.all()
-        
+
         # lendo parametro de filtro da URL "active"
-        client_is_active = self.request.GET.get('active')
+        client_is_active = self.request.GET.get("active")
 
         # Filtando os clientes inativos
-        if client_is_active == 'false':
+        if client_is_active == "false":
             queryset = queryset.filter(is_active=False)
-        
+
         # Retornando os clientes ativos
         else:
             queryset = queryset.filter(is_active=True)
-        
+
         return queryset
 
 
 class ListVehiclesView(generic.ListView):
     model = Vehicle
-    template_name = 'vehicles/vehicles_list.html'
-    context_object_name = 'vehicles'
+    template_name = "vehicles/vehicles_list.html"
+    context_object_name = "vehicles"
 
     def get_queryset(self):
         # Filtrando os veículos pelo status do cliente
         # Retorna apenas os veículos cujo cliente está ativo
         return Vehicle.objects.filter(is_active=True, client__is_active=True)
-        
+
+
 class ClientDetailView(generic.DetailView):
     model = Client
-    template_name = 'clients/client_detail.html'
+    template_name = "clients/client_detail.html"
 
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
 
-        vehicles = self.object.vehicles.all()
+        vehicles = self.object.vehicles.all()  # type: ignore
 
-        vehicle_is_active = self.request.GET.get('active')
+        vehicle_is_active = self.request.GET.get("active")
 
-        if vehicle_is_active == 'false':
+        if vehicle_is_active == "false":
             vehicles = vehicles.filter(is_active=False)
         else:
             vehicles = vehicles.filter(is_active=True)
 
-        context['vehicles'] = vehicles
+        context["vehicles"] = vehicles
 
         return context
 
+
 class VehicleDetailView(generic.DetailView):
     model = Vehicle
-    template_name = 'vehicles/vehicle_detail.html'
+    template_name = "vehicles/vehicle_detail.html"
+
 
 class CreateClientView(generic.CreateView):
     model = Client
-    template_name = 'clients/client_create.html'
+    template_name = "clients/client_create.html"
     form_class = ClientForm
-    success_url = reverse_lazy('clients:clients_list')
+    success_url = reverse_lazy("clients:clients_list")
 
 
 class CreateVehicleView(generic.CreateView):
     model = Vehicle
-    template_name = 'vehicles/vehicles_create.html'
+    template_name = "vehicles/vehicles_create.html"
     form_class = VehicleForm
 
     def form_valid(self, form):
         # O ID do cliente que foi passado na URL para associar
-        client_id = self.kwargs['client_id']
+        client_id = self.kwargs["client_id"]
         client = Client.objects.get(id=client_id)
 
         vehicle = form.save(commit=False)
         vehicle.client = client
         vehicle.save()
         return super().form_valid(form)
-    
+
     def get_success_url(self):
-        client_id = self.kwargs['client_id']
-        return reverse_lazy('clients:client_detail', kwargs={'pk': client_id})
+        client_id = self.kwargs["client_id"]
+        return reverse_lazy("clients:client_detail", kwargs={"pk": client_id})
 
 
 class UpdateClientView(generic.UpdateView):
     model = Client
-    template_name = 'clients/client_update.html'
+    template_name = "clients/client_update.html"
     form_class = ClientForm
-    success_url = reverse_lazy('clients:clients_list')
+    success_url = reverse_lazy("clients:clients_list")
+
 
 class UpdateVehicleView(generic.UpdateView):
     model = Vehicle
-    template_name = 'vehicles/vehicle_update.html'
+    template_name = "vehicles/vehicle_update.html"
     form_class = VehicleForm
 
     def get_success_url(self):
         client_id = self.object.client.id
-        return reverse_lazy('clients:client_detail', kwargs={'pk': client_id})
-    
+        return reverse_lazy("clients:client_detail", kwargs={"pk": client_id})
+
+
 class ClientDeleteView(View):
-    # Recebe(request) o ID(PK) do cliente vindo da URL 
+    # Recebe(request) o ID(PK) do cliente vindo da URL
     def post(self, request, pk):
         # Busca o cliente pelo ID(PK) ou retorna 404 se não encontrado
         client = get_object_or_404(Client, pk=pk)
@@ -118,20 +123,23 @@ class ClientDeleteView(View):
         # Exibe uma mensagem de sucesso para o usuário
         messages.success(request, f"Cliente {client.name} removido com sucesso.")
         # Redireciona para a lista de clientes após a exclusão
-        return redirect('clients:clients_list')
+        return redirect("clients:clients_list")
+
 
 class VehicleDeleteView(View):
-    # Recebe(request) o ID(PK) do veículo vindo da URL 
+    # Recebe(request) o ID(PK) do veículo vindo da URL
     def post(self, request, vehicle_id):
         # Busca o veículo pelo ID(PK) ou retorna 404 se não encontrado
         vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
 
         # Armazena o ID do cliente para redirecionamento após a exclusão
-        client_id = vehicle.client.id  
+        client_id = vehicle.client.pk
         # Chama o método de exclusão lógica do veículo
         vehicle.soft_delete()
 
         # Exibe uma mensagem de sucesso para o usuário
-        messages.success(request, f"Veículo {vehicle.vehicle_model} removido com sucesso.")
+        messages.success(
+            request, f"Veículo {vehicle.vehicle_model} removido com sucesso."
+        )
         # Redireciona para a lista de veículos após a exclusão
-        return redirect('clients:client_detail', pk=client_id)
+        return redirect("clients:client_detail", pk=client_id)

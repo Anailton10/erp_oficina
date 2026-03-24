@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Detalhes do Produto
+{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Detalhes do Item</h2>
+
+  <!-- 📌 Informações principais -->
+  <div class="card bg-dark text-light mb-4">
+    <div class="card-body">
+      <h4 class="mb-3">{{ product.name }}</h4>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Tipo:</strong><br />
+            {{ product.get_type_display }}
+          </p>
+        </div>
+
+        <div class="col-md-6">
+          <p>
+            <strong>Preço:</strong><br />
+            R$ {{ product.price|floatformat:2 }}
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <p>
+            <strong>Estoque:</strong><br />
+
+            {% if product.stock %}
+              {{ product.stock }}
+            {% else %}
+              <span class="text-muted">Sem controle de estoque</span>
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="col-md-6">
+          <p>
+            <strong>Criado em:</strong><br />
+            {{ product.created_at|date:'d/m/Y H:i' }}
+          </p>
+        </div>
+      </div>
+
+      <hr />
+
+      <p>
+        <strong>Descrição:</strong><br />
+        {{ product.description|default:'Sem descrição' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- 🔘 Ações -->
+  <div class="d-flex gap-2">
+    <a href="{% url 'products:update' product.pk %}" class="btn btn-warning"><i class="bi bi-pencil"></i> Editar</a>
+
+    <form action="{% url 'products:delete' product.pk %}" method="post" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este produto?')"><i class="bi bi-trash"></i></button>
+    </form>
+
+    <a href="{% url 'products:list' %}" class="btn btn-secondary">Voltar</a>
+  </div>
+{% endblock %}
