@@ -1,5 +1,3 @@
-from ast import arg
-
 from django.db import models
 
 from clients.models import Client, Vehicle
@@ -23,6 +21,16 @@ class Order(models.Model):
     def total(self):
         # Calcula o total do pedido somando o preço de cada item multiplicado pela quantidade
         return sum(item.quantity * item.unit_price for item in self.items.all())
+
+    def transition_status(self):
+        if self.status == "open":
+            self.status = "progress"
+        elif self.status == "progress":
+            self.status = "done"
+        else:
+            raise ValueError("Transição não permitida!!")
+        self.save()
+        return self.status
 
     def save(self, *args, **kwargs):
 

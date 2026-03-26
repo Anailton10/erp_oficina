@@ -5,6 +5,15 @@
 {% endblock %}
 
 {% block content %}
+<!-- Mensagens de sucesso/erro -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
   <h2 class="mb-4">Ordens de Serviço</h2>
 
   <!-- ➕ Nova OS -->
@@ -34,7 +43,6 @@
           <td>{{ order.vehicle.vehicle_model }}</td>
 
           <td>{{ order.order_date|date:'d/m/Y H:i' }}</td>
-
           <td>
             {% if order.status == 'open' %}
               <span class="badge bg-secondary">Aberto</span>
@@ -48,9 +56,6 @@
           <td>
             <div class="btn-group">
               <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
-
-              <a href="#" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-
               <a href="#" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
             </div>
           </td>

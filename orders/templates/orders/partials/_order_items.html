@@ -5,29 +5,54 @@
       <th>Qtd</th>
       <th>Preço Unit.</th>
       <th>Total</th>
+      <th>Ações</th>
     </tr>
   </thead>
 
-  <tbody>
+  <tbody id="order-items">
     {% for item in order.items.all %}
       <tr>
         <td>
           {{ item.product.name }}<br />
           <small class="text-white">{{ item.product.type }}</small>
         </td>
+
         <td>{{ item.quantity }}</td>
+
         <td>R$ {{ item.unit_price }}</td>
+
         <td>R$ {{ item.total_price }}</td>
+
+        <td>
+          <button 
+            hx-post="#"
+            hx-target="#order-items"
+            hx-swap="innerHTML"
+            class="btn btn-sm btn-warning"
+          >
+            <i class="bi bi-pencil"></i>
+          </button>
+          
+          <button 
+            hx-post="#"
+            hx-target="#order-items"
+            hx-swap="innerHTML"
+            class="btn btn-sm btn-danger"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+
+        </td>
       </tr>
     {% empty %}
       <tr>
-        <td colspan="4" class="text-center">Nenhum item adicionado</td>
+        <td colspan="5" class="text-center">Nenhum item adicionado</td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<!-- Atualiza o total via HTMX -->
+<!-- Atualiza total -->
 <div hx-swap-oob="true" id="order-total">
   Total: R$ {{ order.total|floatformat:2 }}
 </div>

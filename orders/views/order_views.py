@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View, generic
@@ -7,6 +8,23 @@ from products.models import CatalogItem
 
 from ..forms import OrderForm
 from ..models import Order
+
+
+class OrderListView(generic.ListView):
+    model = Order
+    template_name = "orders/order_list.html"
+    context_object_name = "orders"
+
+
+class OrderDetailView(generic.DetailView):
+    model = Order
+    template_name = "orders/order_detail.html"
+    context_object_name = "order"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["catalog_items"] = CatalogItem.objects.all().order_by("type", "name")
+        return context
 
 
 class OrderCreateView(View):
@@ -47,18 +65,13 @@ class OrderCreateView(View):
         )
 
 
-class OrderListView(generic.ListView):
-    model = Order
-    template_name = "orders/order_list.html"
-    context_object_name = "orders"
+class OrderUpdateView(View):
 
-
-class OrderDetailView(generic.DetailView):
-    model = Order
-    template_name = "orders/order_detail.html"
-    context_object_name = "order"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["catalog_items"] = CatalogItem.objects.all().order_by("type", "name")
-        return context
+    def post(self, request, order_id):
+        order_status = get_object_or_404(Order, pk=order_id)
+        try:
+            order_status.transition_status()
+            messages.success(request, "Status atualizado com sucesso")
+        except ValueError as e:
+            messages.error(request, f"Operação invalida, erro {e}")
+        return redirect("orders:order_detail", pk=order_id)
