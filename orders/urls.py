@@ -26,4 +26,14 @@ urlpatterns = [
         order_item_views.AddOrderItemView.as_view(),
         name="add_item",
     ),
+    path(
+        "<int:item_id>/delete-item/",
+        order_item_views.DeleteOrderItemView.as_view(),
+        name="delete_item",
+    ),
+    path(
+        "<int:item_id>/update-item/",
+        order_item_views.UpdateOrderItemView.as_view(),
+        name="update_item",
+    ),
 ]

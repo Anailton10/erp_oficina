@@ -5,6 +5,15 @@
 {% endblock %}
 
 {% block content %}
+<!-- Mensagens de sucesso/erro -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
   <h2 class="mb-4">Ordem de Serviço {{ order.number }}</h2>
   {% if order.status == 'open' %}
     <span class="badge bg-secondary">Aberto</span>
@@ -38,7 +47,7 @@
     </form>
     <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Voltar</a>
   </div>
-
+  <div id="modal-container"></div>
   {% include 'orders/partials/_add_item_modal.html' %}
   {% include 'orders/partials/_add_item_scripts.html' %}
 {% endblock %}

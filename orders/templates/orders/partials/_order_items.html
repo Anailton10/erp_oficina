@@ -8,7 +8,6 @@
       <th>Ações</th>
     </tr>
   </thead>
-
   <tbody id="order-items">
     {% for item in order.items.all %}
       <tr>
@@ -16,32 +15,20 @@
           {{ item.product.name }}<br />
           <small class="text-white">{{ item.product.type }}</small>
         </td>
-
         <td>{{ item.quantity }}</td>
-
         <td>R$ {{ item.unit_price }}</td>
-
         <td>R$ {{ item.total_price }}</td>
-
         <td>
-          <button 
-            hx-post="#"
-            hx-target="#order-items"
-            hx-swap="innerHTML"
-            class="btn btn-sm btn-warning"
-          >
+          <button class="btn btn-sm btn-warning" 
+            hx-get="{% url 'orders:update_item' item.pk %}" 
+            hx-target="#modal-container"
+            hx-swap="innerHTML">
             <i class="bi bi-pencil"></i>
           </button>
-          
-          <button 
-            hx-post="#"
-            hx-target="#order-items"
-            hx-swap="innerHTML"
-            class="btn btn-sm btn-danger"
-          >
-            <i class="bi bi-trash"></i>
-          </button>
-
+          <form class="d-inline" action="{% url 'orders:delete_item' item.pk %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+          </form>
         </td>
       </tr>
     {% empty %}
@@ -51,8 +38,5 @@
     {% endfor %}
   </tbody>
 </table>
-
-<!-- Atualiza total -->
-<div hx-swap-oob="true" id="order-total">
-  Total: R$ {{ order.total|floatformat:2 }}
-</div>
+<div hx-swap-oob="true" id="order-total">Total: R$ {{ order.total|floatformat:2 }}</div>
+<div id="modal-container" hx-swap-oob="true"></div>

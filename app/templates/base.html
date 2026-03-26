@@ -17,7 +17,7 @@
   </head>
   <body>
     <div class="sidebar">
-      <h5 class="mb-4">ERP Oficina</h5>
+      <a href="{% url 'home' %}"><h5 class="mb-4">ERP Oficina</h5></a>
       <a href="{% url 'clients:clients_list' %}"><i class="bi bi-people"></i> Clientes</a>
       <a href="{% url 'orders:order_list' %}"><i class="bi bi-car-front"></i> Ordem de Serviço</a>
       <a href="{% url 'products:list' %}"><i class="bi bi-box"></i> Catálogo</a>
