@@ -1,14 +1,12 @@
-import json
-
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View, generic
 
 from clients.models import Client, Vehicle
 from products.models import CatalogItem
 
-from .forms import OrderForm
-from .models import Order, OrderItem
+from ..forms import OrderForm
+from ..models import Order
 
 
 class OrderCreateView(View):
@@ -64,20 +62,3 @@ class OrderDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context["catalog_items"] = CatalogItem.objects.all().order_by("type", "name")
         return context
-
-
-class AddOrderItemView(View):
-    def post(self, request, order_id):
-        try:
-            order = Order.objects.get(id=order_id)
-            data = json.loads(request.body)
-            product = CatalogItem.objects.get(id=data["product_id"])
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=int(data["quantity"]),
-                unit_price=data["unit_price"],
-            )
-            return JsonResponse({"success": True})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
