@@ -1,31 +1,25 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Novo Cliente
+  Novo Cliente
 {% endblock %}
 
 {% block content %}
+  <h2 class="mb-4">Novo Cliente</h2>
 
-<h2 class="mb-4">Novo Cliente</h2>
+  <form method="post">
+    {% csrf_token %}
 
-<form method="post">
+    <div class="mb-3">
+      <label>Nome</label>
+      {{ form.name }}
+    </div>
 
-{% csrf_token %}
+    <div class="mb-3">
+      <label>Telefone</label>
+      {{ form.phone_number }}
+    </div>
 
-<div class="mb-3">
-<label>Nome</label>
-{{ form.name }}
-</div>
-
-<div class="mb-3">
-<label>Telefone</label>
-{{ form.phone_number}}
-</div>
-
-<button class="btn btn-success">
-Salvar
-</button>
-
-</form>
-
+    <button class="btn btn-success">Salvar</button>
+  </form>
 {% endblock %}

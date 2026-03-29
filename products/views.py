@@ -14,7 +14,6 @@ class ProductListView(generic.ListView):
 
     def get_queryset(self):
         queryset = CatalogItem.objects.all()
-
         products_is_active = self.request.GET.get("active")
 
         if products_is_active == "false":
@@ -38,7 +37,6 @@ class ProductCreateView(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context.update(
             {
                 "title": "Novo Produto",
@@ -47,6 +45,14 @@ class ProductCreateView(generic.CreateView):
             }
         )
         return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "Produto criado com sucesso.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Erro ao criar produto.")
+        return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy("products:list")
@@ -59,7 +65,6 @@ class ProductUpdatedView(generic.UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context.update(
             {
                 "title": "Editar Produto",
@@ -70,6 +75,14 @@ class ProductUpdatedView(generic.UpdateView):
             }
         )
         return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "Produto atualizado com sucesso.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Erro ao atualizar produto.")
+        return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy("products:detail", kwargs={"pk": self.kwargs["pk"]})
@@ -82,6 +95,8 @@ class ProductDeleteView(View):
         product.soft_delete()
 
         messages.success(
-            request, f"Produco/Serviço {product.name} removido com sucesso"
+            request,
+            f"Produto/Serviço {product.name} removido com sucesso.",
         )
+
         return redirect("products:list")

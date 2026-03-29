@@ -31,9 +31,12 @@ class OrderCreateView(View):
     def get(self, request, client_id, vehicle_id):
         client = get_object_or_404(Client, id=client_id)
         vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+
         if vehicle.client != client:
             raise Http404("Veículo não pertence ao cliente")
+
         form = OrderForm()
+
         return render(
             request,
             "orders/order_form.html",
@@ -47,13 +50,22 @@ class OrderCreateView(View):
     def post(self, request, client_id, vehicle_id):
         client = get_object_or_404(Client, id=client_id)
         vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+
+        if vehicle.client != client:
+            raise Http404("Veículo não pertence ao cliente")
+
         form = OrderForm(request.POST)
+
         if form.is_valid():
             order = form.save(commit=False)
             order.client = client
             order.vehicle = vehicle
             order.save()
+
+            messages.success(request, "Ordem criada com sucesso.")
             return redirect("orders:order_detail", pk=order.pk)
+
+        messages.error(request, "Erro ao criar ordem.")
         return render(
             request,
             "orders/order_form.html",
@@ -66,12 +78,13 @@ class OrderCreateView(View):
 
 
 class OrderUpdateView(View):
-
     def post(self, request, order_id):
-        order_status = get_object_or_404(Order, pk=order_id)
+        order = get_object_or_404(Order, pk=order_id)
+
         try:
-            order_status.transition_status()
-            messages.success(request, "Status atualizado com sucesso")
+            order.transition_status()
+            messages.success(request, "Status atualizado com sucesso.")
         except ValueError as e:
-            messages.error(request, f"Operação invalida, erro {e}")
+            messages.error(request, f"Operação inválida: {e}")
+
         return redirect("orders:order_detail", pk=order_id)
