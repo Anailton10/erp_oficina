@@ -6,12 +6,7 @@
         <button type="button" class="btn-close btn-close-white" onclick="closeModal()"></button>
       </div>
       <div class="modal-body">
-        <form 
-          hx-post="{% url 'orders:update_item' item.id %}"
-          hx-target="#order-items"
-          hx-swap="outerHTML"
-          hx-on="htmx:afterRequest: document.body.dispatchEvent(new Event('itemAdded'))"
-        >
+        <form hx-post="{% url 'orders:update_item' item.id %}" hx-target="#order-items" hx-swap="outerHTML" hx-on="htmx:afterRequest: document.body.dispatchEvent(new Event('itemAdded'))">
           {% csrf_token %}
           {% if form.non_field_errors %}
             <div class="alert alert-danger">{{ form.non_field_errors }}</div>
@@ -19,12 +14,16 @@
           <div class="mb-3">
             <label class="form-label">Quantidade</label>
             {{ form.quantity }}
-            <div class="text-danger"><small>{{ form.quantity.errors }}</small></div>
+            <div class="text-danger">
+              <small>{{ form.quantity.errors }}</small>
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Preço Unitário</label>
             {{ form.unit_price }}
-            <div class="text-danger"><small>{{ form.unit_price.errors }}</small></div>
+            <div class="text-danger">
+              <small>{{ form.unit_price.errors }}</small>
+            </div>
           </div>
           <button type="submit" class="btn btn-success w-100">Salvar Alterações</button>
         </form>

@@ -1,14 +1,16 @@
 import json
 
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.views import View
 
 from products.models import CatalogItem
 
 from ..forms import OrderItemEditForm
 from ..models import Order, OrderItem
+from ..service import OrderService as service
 
 
 class AddOrderItemView(View):
@@ -17,25 +19,28 @@ class AddOrderItemView(View):
             order = Order.objects.get(id=order_id)
             data = json.loads(request.body)
             product = CatalogItem.objects.get(id=data["product_id"])
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=int(data["quantity"]),
-                unit_price=data["unit_price"],
-            )
+            service.add_item(order, product, int(data["quantity"]))
             return JsonResponse({"success": True})
-        # TODO: Tratar melhor os possiveis erros ""Order.DoesNotExist, CatalogItem.DoesNotExist"
+        except (Order.DoesNotExist, CatalogItem.DoesNotExist):
+            return JsonResponse({"error": "Recurso não encontrado"}, status=404)
+
+        except ValueError:
+            return JsonResponse({"error": "Operação inválida"}, status=400)
+
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
 
 class DeleteOrderItemView(View):
     def post(self, request, item_id):
-        item = get_object_or_404(OrderItem, pk=item_id)
-        order_id = item.order.pk
-        item.delete()
-        messages.success(request, "Item deletado com sucesso.")
-
+        try:
+            item_order = get_object_or_404(OrderItem, pk=item_id)
+            order_id = item_order.order.pk
+            order = item_order.order
+            service.remove_item(order, item_order)
+            messages.success(request, "Item deletado com sucesso.")
+        except ValueError as e:
+            messages.error(request, f"Operação inválida, {e}")
         return redirect("orders:order_detail", pk=order_id)
 
 
@@ -54,13 +59,17 @@ class UpdateOrderItemView(View):
             item = get_object_or_404(OrderItem, pk=item_id)
             order = item.order
             form = OrderItemEditForm(request.POST, instance=item)
-            print(form.errors)
+            old_quantity = item.quantity
+
             if form.is_valid():
-                form.save()
+                service.update_item(
+                    order_item=item,
+                    new_quantity=form.cleaned_data["quantity"],
+                    old_quantity=old_quantity,
+                )
                 order = Order.objects.prefetch_related("items__product").get(
                     pk=item.order.pk
                 )
-
                 response = render(
                     request, "orders/partials/_order_items.html", {"order": order}
                 )
@@ -73,4 +82,8 @@ class UpdateOrderItemView(View):
                 {"form": form, "item": item},
             )
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+            messages.error(request, f"Operação inválida, {e}")
+            url = reverse_lazy("orders:order_detail", kwargs={"pk": order.pk})
+            response = HttpResponse()
+            response["HX-Redirect"] = url
+            return response
