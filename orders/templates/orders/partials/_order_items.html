@@ -19,12 +19,7 @@
         <td>R$ {{ item.unit_price }}</td>
         <td>R$ {{ item.total_price }}</td>
         <td>
-          <button class="btn btn-sm btn-warning" 
-            hx-get="{% url 'orders:update_item' item.pk %}" 
-            hx-target="#modal-container"
-            hx-swap="innerHTML">
-            <i class="bi bi-pencil"></i>
-          </button>
+          <button class="btn btn-sm btn-warning" hx-get="{% url 'orders:update_item' item.pk %}" hx-target="#modal-container" hx-swap="innerHTML"><i class="bi bi-pencil"></i></button>
           <form class="d-inline" action="{% url 'orders:delete_item' item.pk %}" method="post">
             {% csrf_token %}
             <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
@@ -36,7 +31,10 @@
         <td colspan="5" class="text-center">Nenhum item adicionado</td>
       </tr>
     {% endfor %}
+
+    <!-- atualiza o total fora do target principal -->
+    <div id="order-total" hx-swap-oob="true">Total: R$ {{ order.total|floatformat:2 }}</div>
+    <!-- limpa o modal após submit -->
+    <div id="modal-container" hx-swap-oob="true"></div>
   </tbody>
 </table>
-<div hx-swap-oob="true" id="order-total">Total: R$ {{ order.total|floatformat:2 }}</div>
-<div id="modal-container" hx-swap-oob="true"></div>

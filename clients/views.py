@@ -13,14 +13,17 @@ class ListClientsView(generic.ListView):
     context_object_name = "clients"
 
     def get_queryset(self):
-        queryset = Client.objects.all()
+        queryset = super().get_queryset()
         client_is_active = self.request.GET.get("active")
+        client_name = self.request.GET.get("client_name")
 
         if client_is_active == "false":
             queryset = queryset.filter(is_active=False)
         else:
             queryset = queryset.filter(is_active=True)
 
+        if client_name:
+            queryset = queryset.filter(name__icontains=client_name)
         return queryset
 
 

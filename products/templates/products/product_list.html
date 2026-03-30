@@ -7,31 +7,60 @@
 {% block content %}
   <h2 class="mb-4">Catálogo (Produtos e Serviços)</h2>
   {% block messeges %}{% endblock%}
-  <!-- 🔎 Filtros -->
-  <div class="card bg-dark text-light mb-4">
-    <div class="card-body">
-      <form method="get" class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Nome</label>
-          {{ form.name }}
-        </div>
+<!-- 🔎 Filtros -->
+<div class="card bg-dark text-light mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3" autocomplete="off">
 
-        <div class="col-md-3">
-          <label class="form-label">Tipo</label>
-          {{ form.type }}
-        </div>
+      <!-- 🔍 Busca principal -->
+      <div class="col-md-4">
+        <label class="form-label">Buscar</label>
+        <div class="input-group">
 
-        <div class="col-md-3">
-          <label class="form-label">Preço máximo</label>
-          {{ form.max_price }}
-        </div>
+          <span class="input-group-text bg-dark border-secondary text-light">
+            <i class="bi bi-search"></i>
+          </span>
 
-        <div class="col-md-2 d-flex align-items-end">
-          <button class="btn btn-primary w-100"><i class="bi bi-search"></i> Filtrar</button>
+          <input
+            type="text"
+            name="name"
+            value="{{ request.GET.name }}"
+            class="form-control bg-dark text-light border-secondary"
+            placeholder="Nome do produto ou serviço..."
+          >
+
+          {% if request.GET.name %}
+            <a href="{% url 'products:list' %}" 
+               class="btn btn-outline-secondary">
+              <i class="bi bi-x-lg"></i>
+            </a>
+          {% endif %}
+
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- Tipo -->
+      <div class="col-md-3">
+        <label class="form-label">Tipo</label>
+        {{ form.type }}
+      </div>
+
+      <!-- Preço -->
+      <div class="col-md-3">
+        <label class="form-label">Preço</label>
+        {{ form.price }}
+      </div>
+
+      <!-- Botão -->
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary w-100">
+          <i class="bi bi-search"></i> Filtrar
+        </button>
+      </div>
+
+    </form>
   </div>
+</div>
 
   <!-- ➕ Botão de criação -->
   <a href="{% url 'products:create' %}" class="btn btn-success mb-3"><i class="bi bi-plus"></i> Novo Item</a>

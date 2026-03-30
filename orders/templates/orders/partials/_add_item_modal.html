@@ -1,34 +1,44 @@
 <div class="modal fade" id="modalAdicionarItem" tabindex="-1" aria-labelledby="modalAdicionarItemLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content bg-black">
-
       <div class="modal-header">
         <div>
-          <h5 class="modal-title mb-0" id="modalAdicionarItemLabel">Adicionar item</h5>
-          <small class="text-muted">Busque um produto ou serviço do catálogo</small>
+          <h5 class="modal-title mb-0" id="modalAdicionarItemLabel">Adicionar item à ordem</h5>
+          <small class="text-nowrap">Selecione um produto ou serviço do catálogo</small>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
+        <!-- 🔍 Busca -->
         <div class="row g-2 mb-3">
           <div class="col">
-            <input type="text" id="buscaItem" class="form-control" placeholder="Buscar por nome..." oninput="filtrarItens()">
+            <input type="text" name="name" class="form-control"
+                   placeholder="Buscar por nome do item..."
+                   hx-get="{% url 'orders:add_item' order.id %}"
+                   hx-trigger="keyup changed delay:300ms"
+                   hx-target="#listaItens"
+                   hx-include="#filtroTipo">
           </div>
           <div class="col-auto">
-            <select id="filtroTipo" class="form-select" onchange="filtrarItens()">
-              <option value="">Todos os tipos</option>
-              <option value="PRODUTO">Produto</option>
-              <option value="SERVICO">Serviço</option>
+            <select id="filtroTipo" name="type" class="form-select"
+                    hx-get="{% url 'orders:add_item' order.id %}"
+                    hx-trigger="change"
+                    hx-target="#listaItens"
+                    hx-include="#buscaItem">
+              <option value="">Todos</option>
+              <option value="PRODUTO">Somente produtos</option>
+              <option value="SERVICO">Somente serviços</option>
             </select>
           </div>
         </div>
 
+        <!-- 📋 Lista -->
         <div id="listaItens" style="max-height: 280px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: .375rem;">
           {% for item in catalog_items %}
             <div class="item-row d-flex align-items-center justify-content-between px-3 py-2 border-bottom"
-                 data-id="{{ item.id }}" data-nome="{{ item.name }}" data-tipo="{{ item.type }}"
-                 data-preco="{{ item.price }}" data-estoque="{{ item.stock|default:'' }}"
+                 data-id="{{ item.id }}" data-nome="{{ item.name }}"
+                 data-preco="{{ item.price }}"
                  onclick="selecionarItem(this)" style="cursor:pointer;">
               <div class="d-flex align-items-center gap-2">
                 <span class="badge {% if item.type == 'PRODUTO' %}bg-primary{% else %}bg-success{% endif %}">
@@ -36,43 +46,54 @@
                 </span>
                 <span>{{ item.name }}</span>
                 {% if item.type == 'PRODUTO' %}
-                  <small class="text-muted">Estoque: {{ item.stock }}</small>
+                  <small class="text-white">Estoque: {{ item.stock }}</small>
                 {% endif %}
               </div>
               <span class="fw-semibold">R$ {{ item.price }}</span>
             </div>
           {% empty %}
-            <p class="text-center text-muted py-3 mb-0">Nenhum item cadastrado.</p>
+            <p class="text-center text-muted py-3 mb-0">Nenhum item disponível no catálogo.</p>
           {% endfor %}
         </div>
 
-        <div id="secaoItemSelecionado" class="mt-3 p-3 bg-light rounded d-none">
-          <p class="text-muted small fw-semibold text-uppercase mb-2">Item selecionado</p>
-          <p id="nomeItemSelecionado" class="fw-semibold mb-3"></p>
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label small">Quantidade</label>
-              <input type="number" id="inputQuantidade" class="form-control" min="1" value="1" oninput="atualizarTotal()">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label small">Preço unitário (R$)</label>
-              <input type="number" id="inputPreco" class="form-control" min="0" step="0.01" oninput="atualizarTotal()">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label small">Total</label>
-              <p id="totalItem" class="fw-semibold fs-5 mt-1 mb-0">R$ 0,00</p>
+        <!-- 📦 Seleção + Form -->
+        <form id="formAdicionarItem"
+              hx-post="{% url 'orders:add_item' order.id %}"
+              hx-target="#order-items"
+              hx-swap="outerHTML"
+              hx-on::after-request="fecharModal(event)">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" id="inputProductId">
+
+          <div id="secaoItemSelecionado" class="mt-3 p-3 bg-light rounded d-none">
+            <p class="text-muted small fw-semibold text-uppercase mb-2">Item selecionado</p>
+            <p id="nomeItemSelecionado" class="fw-semibold mb-3 text-dark"></p>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small text-dark">Quantidade</label>
+                <input type="number" name="quantity" id="inputQuantidade"
+                       class="form-control" min="1" value="1" oninput="atualizarTotal()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small text-dark">Preço unitário (R$)</label>
+                <input type="number" id="inputPreco" class="form-control"
+                       min="0" step="0.01" readonly>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small text-dark">Valor total</label>
+                <p id="totalItem" class="fw-semibold fs-5 mt-1 mb-0 text-dark">R$ 0,00</p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" id="btnConfirmar" class="btn btn-primary" disabled onclick="confirmarItem()">
-          Adicionar item
-        </button>
+          <div class="modal-footer px-0 pb-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" id="btnConfirmar" class="btn btn-primary" disabled>
+              Adicionar à ordem
+            </button>
+          </div>
+        </form>
       </div>
-
     </div>
   </div>
 </div>

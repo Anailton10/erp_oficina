@@ -23,7 +23,9 @@ class OrderDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["catalog_items"] = CatalogItem.objects.all().order_by("type", "name")
+        context["catalog_items"] = CatalogItem.objects.filter(is_active=True).order_by(
+            "type", "name"
+        )
         return context
 
 

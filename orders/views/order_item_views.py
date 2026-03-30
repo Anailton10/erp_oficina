@@ -1,9 +1,6 @@
-import json
-
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
 from django.views import View
 
 from products.models import CatalogItem
@@ -14,24 +11,41 @@ from ..service import OrderService as service
 
 
 class AddOrderItemView(View):
+    def get(self, request):
+        products = CatalogItem.objects.all()
+        name = request.GET.get("name", "")
+        type = request.GET.get("type", "")
+
+        if name:
+            products = products.filter(name__icontains=name)
+        if type:
+            products = products.filter(type=type)
+
+        return render(
+            request,
+            "orders/partials/_catalog_items.html",
+            {
+                "products": products,
+            },
+        )
+
     def post(self, request, order_id):
         try:
             order = Order.objects.get(id=order_id)
-            data = json.loads(request.body)
-            product = CatalogItem.objects.get(id=data["product_id"])
+            product = CatalogItem.objects.get(id=request.POST["product_id"])
+            service.add_item(order, product, int(request.POST["quantity"]))
 
-            service.add_item(order, product, int(data["quantity"]))
-
-            return JsonResponse({"success": True})
+            return render(
+                request, "orders/partials/_order_items.html", {"order": order}
+            )
 
         except (Order.DoesNotExist, CatalogItem.DoesNotExist):
-            return JsonResponse({"error": "Recurso não encontrado"}, status=404)
 
-        except ValueError:
-            return JsonResponse({"error": "Operação inválida"}, status=400)
-
+            return HttpResponse("Recurso não encontrado", status=404)
+        except ValueError as e:
+            return HttpResponse(str(e), status=400)
         except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+            return HttpResponse(str(e), status=500)
 
 
 class DeleteOrderItemView(View):
@@ -52,7 +66,6 @@ class UpdateOrderItemView(View):
     def get(self, request, item_id):
         item = get_object_or_404(OrderItem, pk=item_id)
         form = OrderItemEditForm(instance=item)
-
         return render(
             request,
             "orders/partials/_edit_item_modal.html",
@@ -63,37 +76,23 @@ class UpdateOrderItemView(View):
         item = get_object_or_404(OrderItem, pk=item_id)
         order = item.order
         form = OrderItemEditForm(request.POST, instance=item)
-
         try:
             old_quantity = item.quantity
-
             if form.is_valid():
                 service.update_item(
                     order_item=item,
                     new_quantity=form.cleaned_data["quantity"],
                     old_quantity=old_quantity,
                 )
-
-                messages.success(request, "Item atualizado com sucesso.")
-
-                # 👉 HTMX redirect (resolve problema das mensagens)
-                response = HttpResponse()
-                response["HX-Redirect"] = reverse_lazy(
-                    "orders:order_detail", kwargs={"pk": order.pk}
+                return render(
+                    request,
+                    "orders/partials/_order_items.html",
+                    {"order": order},
                 )
-                return response
-
             return render(
                 request,
                 "orders/partials/_edit_item_modal.html",
                 {"form": form, "item": item},
             )
-
         except Exception as e:
-            messages.error(request, f"Erro ao atualizar item: {e}")
-
-            response = HttpResponse()
-            response["HX-Redirect"] = reverse_lazy(
-                "orders:order_detail", kwargs={"pk": order.pk}
-            )
-            return response
+            return HttpResponse(str(e), status=400)

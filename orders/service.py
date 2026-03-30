@@ -52,6 +52,8 @@ class OrderService:
     def remove_item(order, order_item):
         if order.status == "progress" or order.status == "done":
             raise ValueError("Não pode remover item após ordem inciada/finalizada")
-        order_item.product.stock += order_item.quantity
+        product = order_item.product
+        if product.has_stock_control():
+            order_item.product.stock += order_item.quantity
         order_item.product.save()
         order_item.delete()

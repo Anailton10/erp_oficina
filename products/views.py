@@ -13,15 +13,32 @@ class ProductListView(generic.ListView):
     context_object_name = "items"
 
     def get_queryset(self):
-        queryset = CatalogItem.objects.all()
+        queryset = super().get_queryset()
         products_is_active = self.request.GET.get("active")
+        product_type = self.request.GET.get("type")
+        product_name = self.request.GET.get("name")
+        product_price = self.request.GET.get("price")
 
         if products_is_active == "false":
             queryset = queryset.filter(is_active=False)
         else:
             queryset = queryset.filter(is_active=True)
 
+        if product_type:
+            queryset = queryset.filter(type=product_type)
+
+        if product_name:
+            queryset = queryset.filter(name__icontains=product_name)
+
+        if product_price:
+            queryset = queryset.filter(price__icontains=product_price)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["form"] = CatalogItemForm(self.request.GET or None)
+        return context
 
 
 class ProductDetailView(generic.DetailView):

@@ -5,12 +5,30 @@
 {% endblock %}
 
 {% block content %}
-  <h2 class="mb-4">Clientes</h2>
-
   <!-- Mensagens de sucesso/erro -->
- {% block messeges %} {% endblock messeges%}
+  {% block messeges %}
+  {% endblock %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Clientes</h2>
 
-  <a href="{% url 'clients:client_create' %}" class="btn btn-primary mb-3">Novo Cliente</a>
+    <a href="{% url 'clients:client_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo Cliente</a>
+  </div>
+  <!-- 🔍 Busca -->
+  <form method="get" class="mb-4">
+    <div class="input-group">
+      <span class="input-group-text bg-dark border-secondary text-light"><i class="bi bi-search"></i></span>
+
+      <input autocomplete="off" type="text" name="client_name" value="{{ request.GET.client_name }}" class="form-control bg-dark text-light border-secondary" placeholder="Buscar cliente..." />
+
+      {% if request.GET.q %}
+        <!-- Botão limpar -->
+        <a href="{% url 'clients:clients_list' %}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+
+      {% endif %}
+
+      <button class="btn btn-outline-light" type="submit">Buscar</button>
+    </div>
+  </form>
 
   <table class="table table-dark table-striped">
     <thead>
@@ -39,9 +57,15 @@
           </td>
         </tr>
       {% empty %}
+        {% if request.GET.client_name %}
         <tr>
-          <td colspan="3">Nenhum cliente cadastrado</td>
+          <td colspan="3">Cliente não encontrado</td>
         </tr>
+        {% else %}
+          <tr>
+            <td colspan="3">Nenhum cliente cadastrado</td>
+          </tr>
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>

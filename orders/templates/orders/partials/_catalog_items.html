@@ -1,0 +1,20 @@
+{% for item in products %}
+  <div class="item-row d-flex align-items-center justify-content-between px-3 py-2 border-bottom"
+       data-id="{{ item.id }}" data-nome="{{ item.name }}" data-tipo="{{ item.type }}"
+       data-preco="{{ item.price }}" data-estoque="{{ item.stock|default:'' }}"
+       onclick="selecionarItem(this)" style="cursor:pointer;">
+    
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge {% if item.type == 'PRODUTO' %}bg-primary{% else %}bg-success{% endif %}">
+        {{ item.get_type_display }}
+      </span>
+      <span>{{ item.name }}</span>
+      {% if item.type == 'PRODUTO' %}
+        <small class="text-white">Estoque disponível: {{ item.stock }}</small>
+      {% endif %}
+    </div>
+    <span class="fw-semibold">R$ {{ item.price }}</span>
+  </div>
+{% empty %}
+  <p class="text-center text-muted py-3 mb-0">Nenhum item disponível no catálogo.</p>
+{% endfor %}
