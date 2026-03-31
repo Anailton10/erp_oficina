@@ -51,7 +51,7 @@ class Vehicle(BaseModel):
     vehicle_model = models.CharField(max_length=100, blank=True, null=True)
     vehicle_brand = models.CharField(max_length=100, blank=True, null=True)
     vehicle_year = models.IntegerField(blank=True, null=True)
-    # TODO: Adiconar coluna de placa e garantir que seja única
+    plate = models.CharField(max_length=7, unique=True, default="")
 
     def soft_delete(self):
         """Realiza a exclusão do veiculo, deixando inativo."""

@@ -1,16 +1,51 @@
-client_name,vehicle_model,vehicle_brand,vehicle_year
-João Silva,CG 150,Honda,2010
-Maria Souza,Biz 125,Honda,2018
-Carlos Lima,Fan 160,Honda,2022
-Ana Costa,NMax,Yamaha,2021
-Pedro Santos,Pop 110i,Honda,2020
-Lucas Oliveira,Factor 150,Yamaha,2019
-Fernanda Alves,CG 160 Titan,Honda,2023
-Bruno Rocha,YBR 125,Yamaha,2016
-Juliana Mendes,Bros 160,Honda,2022
-Rafael Pereira,XTZ 250,Yamaha,2021
-Camila Barbosa,Elite 125,Honda,2020
-Gustavo Martins,Fazer 250,Yamaha,2022
-Patrícia Gomes,PCX 160,Honda,2023
-Diego Fernandes,XTZ 150,Yamaha,2018
-Larissa Ribeiro,Biz 110i,Honda,2017
+plate,client_name,vehicle_model,vehicle_brand,vehicle_year
+BRA1A01,João Silva,CG 150,Honda,2010
+BRA1A02,Maria Souza,Biz 125,Honda,2018
+BRA1A03,Carlos Lima,Fan 160,Honda,2022
+BRA1A04,Ana Costa,NMax,Yamaha,2021
+BRA1A05,Pedro Santos,Pop 110i,Honda,2020
+BRA1A06,Lucas Oliveira,Factor 150,Yamaha,2019
+BRA1A07,Fernanda Alves,CG 160 Titan,Honda,2023
+BRA1A08,Bruno Rocha,YBR 125,Yamaha,2016
+BRA1A09,Juliana Mendes,Bros 160,Honda,2022
+BRA1A10,Rafael Pereira,XTZ 250,Yamaha,2021
+BRA1A11,Camila Barbosa,Elite 125,Honda,2020
+BRA1A12,Gustavo Martins,Fazer 250,Yamaha,2022
+BRA1A13,Patrícia Gomes,PCX 160,Honda,2023
+BRA1A14,Diego Fernandes,XTZ 150,Yamaha,2018
+BRA1A15,Larissa Ribeiro,Biz 110i,Honda,2017
+BRA1A16,Marcos Vinicius,CG 125,Honda,2015
+BRA1A17,Aline Freitas,Neo 125,Yamaha,2020
+BRA1A18,Thiago Carvalho,CB 250 Twister,Honda,2021
+BRA1A19,Renata Duarte,Fluo 125,Yamaha,2022
+BRA1A20,André Luiz,XRE 190,Honda,2019
+BRA1A21,Paulo Henrique,CG 160 Start,Honda,2021
+BRA1A22,Beatriz Nunes,Factor 125,Yamaha,2018
+BRA1A23,Felipe Ramos,Bros 150,Honda,2017
+BRA1A24,Vanessa Teixeira,NMax 160,Yamaha,2022
+BRA1A25,Rodrigo Barros,Pop 100,Honda,2014
+BRA1A26,Tatiane Moura,Biz 110i,Honda,2021
+BRA1A27,Eduardo Melo,Fazer 150,Yamaha,2019
+BRA1A28,Sabrina Castro,Elite 125,Honda,2020
+BRA1A29,Leonardo Pires,XTZ 250,Yamaha,2023
+BRA1A30,Priscila Cardoso,PCX 150,Honda,2018
+BRA1A31,Ricardo Alves,CG 150 Fan,Honda,2016
+BRA1A32,Daniela Rocha,Neo 125,Yamaha,2019
+BRA1A33,Fábio Batista,XRE 300,Honda,2022
+BRA1A34,Elaine Monteiro,Factor 150,Yamaha,2020
+BRA1A35,Igor Sales,Bros 160,Honda,2021
+BRA1A36,Michele Duarte,NMax,Yamaha,2023
+BRA1A37,Roberto Farias,CG 125,Honda,2013
+BRA1A38,Simone Ribeiro,Biz 125,Honda,2017
+BRA1A39,Vinicius Lopes,Fazer 250,Yamaha,2022
+BRA1A40,Carla Queiroz,Elite 125,Honda,2021
+BRA1A41,Hugo Mendes,XTZ 150,Yamaha,2018
+BRA1A42,Julio Cesar,CG 160 Titan,Honda,2023
+BRA1A43,Paula Andrade,Neo 125,Yamaha,2020
+BRA1A44,Marcelo Freire,XRE 190,Honda,2019
+BRA1A45,Claudia Pacheco,Biz 110i,Honda,2022
+BRA1A46,Renan Torres,Fazer 150,Yamaha,2021
+BRA1A47,Bianca Siqueira,PCX 160,Honda,2023
+BRA1A48,Diego Araujo,XTZ 250,Yamaha,2022
+BRA1A49,Luana Campos,Pop 110i,Honda,2020
+BRA1A50,Caio Rezende,CG 160 Start,Honda,2021
