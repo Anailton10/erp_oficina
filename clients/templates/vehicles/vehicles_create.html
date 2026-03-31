@@ -13,21 +13,41 @@
     <div class="mb-3">
       <label>Marca</label>
       {{ form.vehicle_brand }}
+      {% if form.vehicle_brand.errors %}
+        <div class="text-danger">
+          {{ form.vehicle_brand.errors.0 }}
+        </div>
+      {% endif %}
     </div>
 
     <div class="mb-3">
       <label>Modelo</label>
       {{ form.vehicle_model }}
+      {% if form.vehicle_model.errors %}
+        <div class="text-danger">
+          {{ form.vehicle_model.errors.0 }}
+        </div>
+      {% endif %}
     </div>
 
     <div class="mb-3">
       <label>Ano</label>
       {{ form.vehicle_year }}
+      {% if form.vehicle_year.errors %}
+        <div class="text-danger">
+          {{ form.vehicle_year.errors.0 }}
+        </div>
+      {% endif %}
     </div>
 
     <div class="mb-3">
-      <label>Cliente</label>
-      {{ form.client_name }}
+      <label>Placa</label>
+      {{ form.plate }}
+      {% if form.plate.errors %}
+        <div class="text-danger">
+          {{ form.plate.errors.0 }}
+        </div>
+      {% endif %}
     </div>
 
     <button class="btn btn-success">Salvar</button>

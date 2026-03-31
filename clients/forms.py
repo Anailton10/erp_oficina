@@ -31,4 +31,16 @@ class ClientForm(forms.ModelForm):
 class VehicleForm(forms.ModelForm):
     class Meta:
         model = Vehicle
-        fields = ["vehicle_brand", "vehicle_model", "vehicle_year"]
+        fields = ["vehicle_brand", "vehicle_model", "vehicle_year", "plate"]
+
+    def clean_plate(self):
+        plate = str(self.cleaned_data.get("plate")).upper().strip()
+
+        pattern_mercosul = re.fullmatch(
+            pattern=r"[A-Z]{3}[0-9][A-Z][0-9]{2}", string=plate
+        )
+        pattern_gray = re.fullmatch(pattern=r"([A-Z]{3})[0-9]{4}", string=plate)
+        if not pattern_gray and not pattern_mercosul:
+            raise forms.ValidationError("Placa fora do padrão")
+
+        return plate

@@ -43,7 +43,7 @@ class ClientDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        vehicles = self.object.vehicles.all()  # related_name
+        vehicles = self.object.vehicles.all()  # type: ignore related_name
 
         vehicle_is_active = self.request.GET.get("active")
 
@@ -90,7 +90,7 @@ class CreateVehicleView(generic.CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Erro ao criar veículo.")
+        messages.error(self.request, "Erro ao criar veículo")
         return super().form_invalid(form)
 
     def get_success_url(self):
