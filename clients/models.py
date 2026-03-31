@@ -38,14 +38,16 @@ class Client(BaseModel):
         self.save()
 
         # Desativa todos os veículos associados
-        self.vehicles.update(is_active=False)
+        self.vehicles.update(is_active=False)  # type: ignore
 
     def __str__(self):
         return self.name
 
 
 class Vehicle(BaseModel):
-    client = models.ForeignKey(Client, related_name='vehicles', on_delete=models.CASCADE)
+    client = models.ForeignKey(
+        Client, related_name="vehicles", on_delete=models.CASCADE
+    )
     vehicle_model = models.CharField(max_length=100, blank=True, null=True)
     vehicle_brand = models.CharField(max_length=100, blank=True, null=True)
     vehicle_year = models.IntegerField(blank=True, null=True)
@@ -59,4 +61,3 @@ class Vehicle(BaseModel):
 
     def __str__(self):
         return f"{self.vehicle_brand} {self.vehicle_model} ({self.vehicle_year})"
-

@@ -11,7 +11,7 @@ from ..service import OrderService as service
 
 
 class AddOrderItemView(View):
-    def get(self, request):
+    def get(self, request, order_id):
         products = CatalogItem.objects.all()
         name = request.GET.get("name", "")
         type = request.GET.get("type", "")
