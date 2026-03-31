@@ -13,6 +13,7 @@ from ..models import Order
 class OrderListView(generic.ListView):
     model = Order
     template_name = "orders/order_list.html"
+    paginate_by = 10
     context_object_name = "orders"
 
 

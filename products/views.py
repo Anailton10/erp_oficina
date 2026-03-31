@@ -1,5 +1,3 @@
-from itertools import product
-
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -12,6 +10,7 @@ from .models import CatalogItem
 class ProductListView(generic.ListView):
     model = CatalogItem
     template_name = "products/product_list.html"
+    paginate_by = 8
     context_object_name = "items"
 
     def get_queryset(self):
@@ -33,7 +32,7 @@ class ProductListView(generic.ListView):
             queryset = queryset.filter(name__icontains=product_name)
 
         if product_price:
-            queryset = queryset.filter(price__icontains=product_price)
+            queryset = queryset.filter(price__lte=product_price)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -66,7 +65,7 @@ class ProductCreateView(generic.CreateView):
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["type"] == 'produto':
+        if form.cleaned_data["type"] == "produto":
             messages.success(self.request, "Produto criado com sucesso.")
         messages.success(self.request, "Serviço criado com sucesso.")
         return super().form_valid(form)
@@ -111,7 +110,7 @@ class ProductUpdatedView(generic.UpdateView):
 
 class ProductDeleteView(View):
     def post(self, request, pk):
-        product = get_object_or_404(CatalogItem, pk=pk)
+        product = get_object_or_404(CatalogItem, pk=pk)  # noqa: F811
 
         product.soft_delete()
 
@@ -120,4 +119,6 @@ class ProductDeleteView(View):
             f"Produto/Serviço {product.name} removido com sucesso.",
         )
 
+        return redirect("products:list")
+        return redirect("products:list")
         return redirect("products:list")

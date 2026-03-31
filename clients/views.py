@@ -10,6 +10,7 @@ from .models import Client, Vehicle
 class ListClientsView(generic.ListView):
     model = Client
     template_name = "clients/clients_list.html"
+    paginate_by = 10
     context_object_name = "clients"
 
     def get_queryset(self):

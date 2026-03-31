@@ -1,0 +1,74 @@
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+  <ul class="pagination justify-content-center align-items-center gap-1">
+
+    <!-- ⏮ Primeira -->
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link bg-dark text-light border-secondary"
+           href="?page=1"
+           title="Primeira página">
+          <i class="bi bi-chevron-double-left"></i>
+        </a>
+      </li>
+
+      <!-- ◀ Anterior -->
+      <li class="page-item">
+        <a class="page-link bg-dark text-light border-secondary"
+           href="?page={{ page_obj.previous_page_number }}"
+           title="Página anterior">
+          <i class="bi bi-chevron-left"></i>
+        </a>
+      </li>
+    {% endif %}
+
+    <!-- 🔢 Números -->
+    {% for page_number in page_obj.paginator.page_range %}
+      {% if page_number <= page_obj.number|add:2 and page_number >= page_obj.number|add:-2 %}
+        
+        {% if page_obj.number == page_number %}
+          <li class="page-item active">
+            <span class="page-link bg-primary border-primary">
+              {{ page_number }}
+            </span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link bg-dark text-light border-secondary"
+               href="?page={{ page_number }}">
+              {{ page_number }}
+            </a>
+          </li>
+        {% endif %}
+
+      {% endif %}
+    {% endfor %}
+
+    <!-- ▶ Próxima -->
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link bg-dark text-light border-secondary"
+           href="?page={{ page_obj.next_page_number }}"
+           title="Próxima página">
+          <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
+
+      <!-- ⏭ Última -->
+      <li class="page-item">
+        <a class="page-link bg-dark text-light border-secondary"
+           href="?page={{ page_obj.paginator.num_pages }}"
+           title="Última página">
+          <i class="bi bi-chevron-double-right"></i>
+        </a>
+      </li>
+    {% endif %}
+
+  </ul>
+
+  <!-- 📊 Info -->
+  <div class="text-center text-muted small mt-2">
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+  </div>
+</nav>
+{% endif %}
