@@ -25,6 +25,12 @@ class ClientForm(forms.ModelForm):
         x = re.fullmatch(pattern, str(phone_number))
         if not x:
             raise forms.ValidationError("Numero de tefefone fora do padrão")
+
+        if Client.objects.filter(phone_number=phone_number).exclude(
+            pk=self.instance.pk
+        ).exists():
+            raise forms.ValidationError("Numero de telefone já pertence a um usuário.")
+
         return phone_number
 
 
@@ -42,5 +48,8 @@ class VehicleForm(forms.ModelForm):
         pattern_gray = re.fullmatch(pattern=r"([A-Z]{3})[0-9]{4}", string=plate)
         if not pattern_gray and not pattern_mercosul:
             raise forms.ValidationError("Placa fora do padrão")
+
+        if Vehicle.objects.filter(plate=plate).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Placa já pertence a um veiculo.")
 
         return plate

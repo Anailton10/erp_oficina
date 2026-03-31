@@ -1,3 +1,5 @@
+from itertools import product
+
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -15,9 +17,9 @@ class ProductListView(generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         products_is_active = self.request.GET.get("active")
-        product_type = self.request.GET.get("type")
+        product_type = self.request.GET.get("type_filter")
         product_name = self.request.GET.get("name")
-        product_price = self.request.GET.get("price")
+        product_price = self.request.GET.get("price_filter")
 
         if products_is_active == "false":
             queryset = queryset.filter(is_active=False)
@@ -37,7 +39,7 @@ class ProductListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["form"] = CatalogItemForm(self.request.GET or None)
+        context["filter_form"] = CatalogItemForm(self.request.GET or None)
         return context
 
 
@@ -64,7 +66,9 @@ class ProductCreateView(generic.CreateView):
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "Produto criado com sucesso.")
+        if form.cleaned_data["type"] == 'produto':
+            messages.success(self.request, "Produto criado com sucesso.")
+        messages.success(self.request, "Serviço criado com sucesso.")
         return super().form_valid(form)
 
     def form_invalid(self, form):

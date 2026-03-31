@@ -1,5 +1,3 @@
-from email.policy import default
-
 from django import forms
 
 from .models import CatalogItem
@@ -10,10 +8,10 @@ class CatalogItemForm(forms.ModelForm):
         model = CatalogItem
         fields = ["name", "description", "price", "stock", "type"]
 
-    type = forms.ChoiceField(
+    type_filter = forms.ChoiceField(
         choices=[("", "Todos"), ("PRODUTO", "Produto"), ("SERVICO", "Serviço")],
         required=False,
-        initial="Todos",
+        initial="",
         widget=forms.Select(
             attrs={
                 "class": "form-select bg-dark text-light border-secondary",
@@ -22,7 +20,7 @@ class CatalogItemForm(forms.ModelForm):
         ),
     )
 
-    price = forms.DecimalField(
+    price_filter = forms.DecimalField(
         required=False,
         label="Preço",
         min_value=0,
