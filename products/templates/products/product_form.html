@@ -5,58 +5,66 @@
 {% endblock %}
 
 {% block content %}
-
-<h2 class="mb-4">{{ title }}</h2>
-
-<form method="post">
-  {% csrf_token %}
-
-  <div class="card bg-dark text-light mb-4">
+<div class="d-flex justify-content-center mt-5">
+  <div class="card w-75 bg-dark text-light border-secondary">
+    <div class="card-header text-center">
+      <h3 class="mb-0">{{ title }}</h3>
+    </div>
     <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Nome</label>
-          {{ form.name }}
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+              <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.type.id_for_label }}" class="form-label">{{ form.type.label }}</label>
+            {{ form.type }}
+            {% if form.type.errors %}
+              <div class="text-danger small mt-1">{{ form.type.errors }}</div>
+            {% endif %}
+          </div>
         </div>
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Tipo</label>
-          {{ form.type }}
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.price.id_for_label }}" class="form-label">{{ form.price.label }}</label>
+            {{ form.price }}
+            {% if form.price.errors %}
+              <div class="text-danger small mt-1">{{ form.price.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.stock.id_for_label }}" class="form-label">{{ form.stock.label }}</label>
+            {{ form.stock }}
+            {% if form.stock.errors %}
+              <div class="text-danger small mt-1">{{ form.stock.errors }}</div>
+            {% endif %}
+          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Preço</label>
-          {{ form.price }}
+        <div class="mb-3">
+          <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+          {% endif %}
         </div>
 
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Estoque</label>
-          {{ form.stock }}
+        <div class="d-flex justify-content-center gap-2 mt-3">
+          <button type="submit" class="btn btn-success px-4">
+            <i class="bi bi-check-lg"></i> {{ button_text }}
+          </button>
+          <a href="{{ cancel_url }}" class="btn btn-secondary px-4">Cancelar</a>
         </div>
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label">Descrição</label>
-        {{ form.description }}
-      </div>
-
+      </form>
     </div>
   </div>
-
-  <div class="d-flex gap-2">
-
-    <button type="submit" class="btn btn-success">
-      <i class="bi bi-check-lg"></i> {{ button_text }}
-    </button>
-
-    <a href="{{ cancel_url }}" class="btn btn-secondary">
-      Cancelar
-    </a>
-
-  </div>
-
-</form>
-
+</div>
 {% endblock %}

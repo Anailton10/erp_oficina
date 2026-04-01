@@ -64,9 +64,19 @@ class VehicleDetailView(generic.DetailView):
 
 class CreateClientView(generic.CreateView):
     model = Client
-    template_name = "clients/client_create.html"
     form_class = ClientForm
-    success_url = reverse_lazy("clients:clients_list")
+    template_name = "clients/client_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "title": "Novo Cliente",
+                "button_text": "Salvar",
+                "cancel_url": reverse_lazy("clients:clients_list"),
+            }
+        )
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, "Cliente criado com sucesso.")
@@ -76,18 +86,33 @@ class CreateClientView(generic.CreateView):
         messages.error(self.request, "Erro ao criar cliente.")
         return super().form_invalid(form)
 
+    def get_success_url(self):
+        return reverse_lazy("clients:clients_list")
+
 
 class CreateVehicleView(generic.CreateView):
     model = Vehicle
-    template_name = "vehicles/vehicles_create.html"
     form_class = VehicleForm
+    template_name = "vehicles/vehicle_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        client = get_object_or_404(Client, id=self.kwargs["client_id"])
+        context.update(
+            {
+                "title": f"Novo Veículo de {client.name}",
+                "button_text": "Salvar",
+                "cancel_url": reverse_lazy(
+                    "clients:client_detail", kwargs={"pk": client.pk}
+                ),
+            }
+        )
+        return context
 
     def form_valid(self, form):
         client = get_object_or_404(Client, id=self.kwargs["client_id"])
-
-        form.instance.client = client  # evita double save
+        form.instance.client = client
         messages.success(self.request, "Veículo criado com sucesso.")
-
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -96,16 +121,28 @@ class CreateVehicleView(generic.CreateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "clients:client_detail",
-            kwargs={"pk": self.kwargs["client_id"]},
+            "clients:client_detail", kwargs={"pk": self.kwargs["client_id"]}
         )
 
 
 class UpdateClientView(generic.UpdateView):
     model = Client
-    template_name = "clients/client_update.html"
     form_class = ClientForm
-    success_url = reverse_lazy("clients:clients_list")
+    template_name = "clients/client_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        client = self.object  # type: ignore
+        context.update(
+            {
+                "title": "Editar Cliente",
+                "button_text": "Atualizar",
+                "cancel_url": reverse_lazy(
+                    "clients:client_detail", kwargs={"pk": client.id}
+                ),
+            }
+        )
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, "Cliente atualizado com sucesso.")
@@ -115,24 +152,40 @@ class UpdateClientView(generic.UpdateView):
         messages.error(self.request, "Erro ao atualizar cliente.")
         return super().form_invalid(form)
 
+    def get_success_url(self):
+        return reverse_lazy("clients:client_detail", kwargs={"pk": self.object.id})  # type: ignore
+
 
 class UpdateVehicleView(generic.UpdateView):
     model = Vehicle
-    template_name = "vehicles/vehicle_update.html"
     form_class = VehicleForm
+    template_name = "vehicles/vehicle_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        vehicle = self.object  # type: ignore
+        context.update(
+            {
+                "title": "Editar Veículo",
+                "button_text": "Atualizar",
+                "cancel_url": reverse_lazy(
+                    "clients:client_detail", kwargs={"pk": vehicle.client.id}
+                ),
+            }
+        )
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, "Veículo atualizado com sucesso.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Erro ao atualizar veículo.")
+        messages.error(self.request, "Erro ao atualizar veículo")
         return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy(
-            "clients:client_detail",
-            kwargs={"pk": self.object.client.id},
+            "clients:client_detail", kwargs={"pk": self.object.client.pk}  # type: ignore
         )
 
 

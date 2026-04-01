@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4 text-center">{{ title }}</h2>
+
+  <form method="post" class="mx-auto" style="max-width:600px;">
+    {% csrf_token %}
+
+    <div class="card bg-dark text-light mb-4">
+      <div class="card-body">
+
+        <div class="mb-3">
+          <label class="form-label">Marca</label>
+          {{ form.vehicle_brand }}
+          {% if form.vehicle_brand.errors %}
+            <div class="text-danger">{{ form.vehicle_brand.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Modelo</label>
+          {{ form.vehicle_model }}
+          {% if form.vehicle_model.errors %}
+            <div class="text-danger">{{ form.vehicle_model.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Ano</label>
+          {{ form.vehicle_year }}
+          {% if form.vehicle_year.errors %}
+            <div class="text-danger">{{ form.vehicle_year.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Placa</label>
+          {{ form.plate }}
+          {% if form.plate.errors %}
+            <div class="text-danger">{{ form.plate.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-center">
+      <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> {{ button_text }}</button>
+      <a href="{{ cancel_url }}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}

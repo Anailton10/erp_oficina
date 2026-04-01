@@ -2,63 +2,88 @@
 {% block title %}Nova Ordem de Serviço{% endblock %}
 
 {% block content %}
+<!-- Header -->
 <div class="d-flex align-items-center justify-content-between mb-4">
   <div>
     <h2 class="mb-0">Nova Ordem de Serviço</h2>
-    <small class="text-muted">Preencha os dados básicos da ordem</small>
+    <small class="text-white">Preencha os dados básicos da ordem</small>
   </div>
 </div>
 
 <form method="post" id="order-form">
   {% csrf_token %}
 
-  <div class="card mb-4">
-    <div class="card-header">
-      <strong class="small">Cliente e veículo</strong>
+  <!-- Cliente / Veículo -->
+  <div class="card bg-dark text-light border-secondary mb-4 shadow-sm">
+    <div class="card-header border-secondary">
+      <strong class="small text-uppercase text-white">Cliente e veículo</strong>
     </div>
+
     <div class="card-body">
       <div class="row">
+
         <div class="col-md-6">
-          <p class="text-muted small mb-1">Cliente</p>
+          <p class="text-white small mb-1">Cliente</p>
           <p class="fw-semibold mb-0">{{ client.name }}</p>
-          <small class="text-muted">{{ client.email }}</small>
+          <small class="text-white">{{ client.email }}</small>
         </div>
+
         <div class="col-md-6">
-          <p class="text-muted small mb-1">Veículo</p>
+          <p class="text-white small mb-1">Veículo</p>
           <p class="fw-semibold mb-0">{{ vehicle.vehicle_model }}</p>
-          <small class="text-muted">{{ vehicle.plate }} · {{ vehicle.year }}</small>
+          <small class="text-white">Placa: {{ vehicle.plate }} - Ano: {{ vehicle.vehicle_year }}</small>
         </div>
+
       </div>
     </div>
   </div>
 
-  <div class="card mb-4">
-    <div class="card-header">
-      <strong class="small">Dados da ordem</strong>
+  <!-- Dados da ordem -->
+  <div class="card bg-dark text-light border-secondary mb-4 shadow-sm">
+    <div class="card-header border-secondary">
+      <strong class="small text-uppercase text-white">Dados da ordem</strong>
     </div>
+
     <div class="card-body">
       <div class="row g-3">
+
+        <!-- Status -->
         <div class="col-md-3">
-          <label class="form-label small">Status</label>
+          <label class="form-label small text-white">{{ form.status.label }}</label>
           {{ form.status }}
+
           {% if form.status.errors %}
-            <div class="text-danger small mt-1">{{ form.status.errors }}</div>
+            <div class="text-danger small mt-1">
+              {{ form.status.errors }}
+            </div>
           {% endif %}
         </div>
+
+        <!-- Descrição -->
         <div class="col-md-9">
-          <label class="form-label small">Observação</label>
+          <label class="form-label small text-white">{{ form.description.label }}</label>
           {{ form.description }}
+
           {% if form.description.errors %}
-            <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+            <div class="text-danger small mt-1">
+              {{ form.description.errors }}
+            </div>
           {% endif %}
         </div>
+
       </div>
     </div>
   </div>
 
-  <div class="d-flex justify-content-end gap-2 mt-2">
-    <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Cancelar</a>
-    <button type="submit" class="btn btn-primary">Criar ordem</button>
+  <!-- Ações -->
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
+      Cancelar
+    </a>
+
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-check-lg"></i> Criar ordem
+    </button>
   </div>
 </form>
 {% endblock %}

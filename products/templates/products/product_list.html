@@ -6,61 +6,45 @@
 
 {% block content %}
   <h2 class="mb-4">Catálogo (Produtos e Serviços)</h2>
-  {% block messeges %}{% endblock%}
-<!-- 🔎 Filtros -->
-<div class="card bg-dark text-light mb-4">
-  <div class="card-body">
-    <form method="get" class="row g-3" autocomplete="off">
+  {% block messeges %}
+  {% endblock %}
+  <!-- 🔎 Filtros -->
+  <div class="card bg-dark text-light mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3" autocomplete="off">
+        <!-- 🔎 Busca principal -->
+        <div class="col-md-4">
+          <label class="form-label">Buscar</label>
+          <div class="input-group">
+            <span class="input-group-text btn btn-outline-light border-secondary"><i class="bi bi-search"></i></span>
 
-      <!-- 🔍 Busca principal -->
-      <div class="col-md-4">
-        <label class="form-label">Buscar</label>
-        <div class="input-group">
+            <input type="text" name="name" value="{{ request.GET.name }}" class="form-control bg-dark text-light border-secondary" placeholder="Nome do produto ou serviço..." />
 
-          <span class="input-group-text bg-dark border-secondary text-light">
-            <i class="bi bi-search"></i>
-          </span>
-
-          <input
-            type="text"
-            name="name"
-            value="{{ request.GET.name }}"
-            class="form-control bg-dark text-light border-secondary"
-            placeholder="Nome do produto ou serviço..."
-          >
-
-          {% if request.GET.name %}
-            <a href="{% url 'products:list' %}" 
-               class="btn btn-outline-secondary">
-              <i class="bi bi-x-lg"></i>
-            </a>
-          {% endif %}
-
+            {% if request.GET.name %}
+              <a href="{% url 'products:list' %}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+            {% endif %}
+          </div>
         </div>
-      </div>
 
-      <!-- Tipo -->
-      <div class="col-md-3">
-        <label class="form-label">Tipo</label>
-        {{ filter_form.type_filter }}
-      </div>
+        <!-- Tipo -->
+        <div class="col-md-3">
+          <label class="form-label">Tipo</label>
+          {{ filter_form.type_filter }}
+        </div>
 
-      <!-- Preço -->
-      <div class="col-md-3">
-        <label class="form-label">Preço</label>
-        {{ filter_form.price_filter }}
-      </div>
+        <!-- Preço -->
+        <div class="col-md-3">
+          <label class="form-label">Preço</label>
+          {{ filter_form.price_filter }}
+        </div>
 
-      <!-- Botão -->
-      <div class="col-md-2 d-flex align-items-end">
-        <button class="btn btn-primary w-100">
-          <i class="bi bi-search"></i> Filtrar
-        </button>
-      </div>
-
-    </form>
+        <!-- Botão -->
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-outline-light w-100"><i class="bi bi-funnel"></i> Filtrar</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
   <!-- ➕ Botão de criação -->
   <a href="{% url 'products:create' %}" class="btn btn-success mb-3"><i class="bi bi-plus"></i> Novo Item</a>
@@ -126,5 +110,5 @@
       {% endfor %}
     </tbody>
   </table>
-  {% include "components/_pagination.html" %}
+  {% include 'components/_pagination.html' %}
 {% endblock %}

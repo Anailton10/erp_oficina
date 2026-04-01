@@ -120,5 +120,3 @@ class ProductDeleteView(View):
         )
 
         return redirect("products:list")
-        return redirect("products:list")
-        return redirect("products:list")
