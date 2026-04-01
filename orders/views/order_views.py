@@ -91,3 +91,6 @@ class OrderUpdateView(View):
             messages.error(request, f"Operação inválida: {e}")
 
         return redirect("orders:order_detail", pk=order_id)
+
+
+# TODO:DELETE DA ORDEM
