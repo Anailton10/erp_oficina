@@ -1,7 +1,11 @@
+import datetime as dt
+
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.views import View, generic
+from weasyprint import HTML
 
 from clients.models import Client, Vehicle
 from products.models import CatalogItem
@@ -94,3 +98,33 @@ class OrderUpdateView(View):
 
 
 # TODO:DELETE DA ORDEM
+
+
+class OrderPDFView(View):
+    def get(self, request, order_id):
+        # 1. buscar a OS
+        order = get_object_or_404(Order, pk=order_id)
+        time_registration = dt.datetime.now().strftime("%d/%m/%y, %H:%M %p")
+        print(f"TESTE HORA: {time_registration}")
+        # 2. renderizar o template HTML com os dados
+        html_string = render_to_string(
+            "orders/partials/_order_pdf.html",
+            {
+                "order": order,
+                "time_registration": time_registration,
+            },
+        )
+        # 3. converter HTML pra PDF com WeasyPrint
+        pdf = HTML(string=html_string).write_pdf()
+        # 4. retornar o HttpResponse com o PDF
+        response = HttpResponse(pdf, content_type="application/pdf")
+        if request.GET.get("download") == "true":
+            response["Content-Disposition"] = (
+                f'attachment; filename="os_{order.number}.pdf"'
+            )
+        else:
+            response["Content-Disposition"] = (
+                f'inline; filename="os_{order.number}.pdf"'
+            )
+
+        return response

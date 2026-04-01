@@ -5,8 +5,10 @@
 {% endblock %}
 
 {% block content %}
-<!-- Mensagens de sucesso/erro -->
-{% block messeges %} {% endblock messeges%}
+  <!-- Mensagens de sucesso/erro -->
+  {% block messeges %}
+
+  {% endblock %}
   <h2 class="mb-4">Ordem de Serviço {{ order.number }}</h2>
   {% if order.status == 'open' %}
     <span class="badge bg-secondary">Aberto</span>
@@ -28,17 +30,29 @@
     </div>
   </div>
 
-  <div class="d-flex gap-2">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdicionarItem">Adicionar item</button>
-    <form method="post" action="{% url 'orders:update_status' order.id %}">
-      {% csrf_token %}
-      {% if order.status == "open" %}
-        <button type="submit" class="btn btn-success"><i class="bi bi-arrow-repeat"></i> Iniciar</button>
-      {% elif order.status == "progress" %}
-      <button type="submit" class="btn btn-warning"><i class="bi bi-arrow-repeat"></i> Finalizar</button>
-      {% endif %}
-    </form>
-    <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Voltar</a>
+  <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+    <!-- Ações principais -->
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdicionarItem"><i class="bi bi-plus-lg"></i> Item</button>
+
+      <form method="post" action="{% url 'orders:update_status' order.id %}">
+        {% csrf_token %}
+        {% if order.status == 'open' %}
+          <button type="submit" class="btn btn-success"><i class="bi bi-play-fill"></i> Iniciar</button>
+        {% elif order.status == 'progress' %}
+          <button type="submit" class="btn btn-warning"><i class="bi bi-check-lg"></i> Finalizar</button>
+        {% endif %}
+      </form>
+      <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+
+    <!-- PDF + navegação -->
+    <div class="d-flex gap-2">
+      <a href="{% url 'orders:order_pdf' order.id %}" class="btn btn-outline-info" target="_blank" rel="noopener noreferrer"><i class="bi bi-eye"></i></a>
+
+      <a href="{% url 'orders:order_pdf' order.id %}?download=true" class="btn btn-outline-light"><i class="bi bi-download"></i></a>
+
+    </div>
   </div>
   <div id="modal-container"></div>
   {% include 'orders/partials/_add_item_modal.html' %}

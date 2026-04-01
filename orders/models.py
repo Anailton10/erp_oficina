@@ -20,7 +20,7 @@ class Order(models.Model):
     @property
     def total(self):
         # Calcula o total do pedido somando o preço de cada item multiplicado pela quantidade
-        return sum(item.quantity * item.unit_price for item in self.items.all())
+        return sum(item.quantity * item.unit_price for item in self.items.all())  # type: ignore
 
     def transition_status(self):
         if self.status == "open":
@@ -59,6 +59,7 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
+    @property
     def total_price(self):
         return self.quantity * self.unit_price
 

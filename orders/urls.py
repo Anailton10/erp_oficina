@@ -22,6 +22,11 @@ urlpatterns = [
         name="update_status",
     ),
     path(
+        "<int:order_id>/os/pdf/",
+        order_views.OrderPDFView.as_view(),
+        name="order_pdf",
+    ),
+    path(
         "<int:order_id>/add-item/",
         order_item_views.AddOrderItemView.as_view(),
         name="add_item",
