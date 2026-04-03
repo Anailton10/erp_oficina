@@ -88,4 +88,5 @@ python manage.py runserver
 - [x] Cadastro de produtos e serviços
 - [x] Ordens de serviço completas
 - [x] Controle de estoque
-- [ ] Geração de PDF da OS
+- [x] Geração de PDF da OS
+- [x] Dashboard
