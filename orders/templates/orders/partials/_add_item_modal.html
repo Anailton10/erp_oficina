@@ -60,7 +60,7 @@
         <form id="formAdicionarItem"
               hx-post="{% url 'orders:add_item' order.id %}"
               hx-target="#order-items"
-              hx-swap="outerHTML"
+              hx-swap="innerHTML"
               hx-on::after-request="fecharModal(event)">
           {% csrf_token %}
           <input type="hidden" name="product_id" id="inputProductId">
