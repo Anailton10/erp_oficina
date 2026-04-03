@@ -5,8 +5,10 @@
 {% endblock %}
 
 {% block content %}
-<!-- Mensagens de sucesso/erro -->
-{% block messeges %} {% endblock messeges%}
+  <!-- Mensagens de sucesso/erro -->
+  {% block messeges %}
+
+  {% endblock %}
   <h2 class="mb-4">Ordens de Serviço</h2>
 
   <!-- ➕ Nova OS -->
@@ -49,7 +51,10 @@
           <td>
             <div class="btn-group">
               <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
-              <a href="#" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+              <form action="{% url 'orders:order_delete' order.pk %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta ordem?')"><i class="bi bi-trash"></i></button>
+              </form>
             </div>
           </td>
         </tr>
@@ -60,5 +65,5 @@
       {% endfor %}
     </tbody>
   </table>
-  {% include "components/_pagination.html" %}
+  {% include 'components/_pagination.html' %}
 {% endblock %}

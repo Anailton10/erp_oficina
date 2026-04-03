@@ -22,12 +22,18 @@ class OrderListView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListVie
     context_object_name = "orders"
     permission_required = "orders.view_order"
 
+    def get_queryset(self):
+        return Order.objects.filter(is_active=True)
+
 
 class OrderDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = Order
     template_name = "orders/order_detail.html"
     context_object_name = "order"
     permission_required = "orders.view_order"
+
+    def get_queryset(self):
+        return Order.objects.filter(is_active=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -104,7 +110,18 @@ class OrderUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
         return redirect("orders:order_detail", pk=order_id)
 
 
-# TODO:DELETE DA ORDEM
+class OrderDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "orders.delete_order"
+
+    def post(self, request, order_id):
+        order = get_object_or_404(Order, pk=order_id)
+        order_number = order.number
+
+        order.soft_delete()
+
+        messages.success(request, f"Ordem {order_number} removida com sucesso.")
+
+        return redirect("orders:order_list")
 
 
 class OrderPDFView(LoginRequiredMixin, PermissionRequiredMixin, View):

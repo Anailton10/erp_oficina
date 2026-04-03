@@ -1,10 +1,11 @@
 from django.db import models
 
+from app.models.base import BaseModel
 from clients.models import Client, Vehicle
 from products.models import CatalogItem
 
 
-class Order(models.Model):
+class Order(BaseModel):
     STATUS_CHOICES = [
         ("open", "Aberto"),
         ("progress", "Em Progresso"),

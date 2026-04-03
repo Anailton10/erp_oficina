@@ -13,7 +13,6 @@ class Home(LoginRequiredMixin, TemplateView):
         new_clients = metrics.get_number_new_clients()
         products_low = metrics.get_low_stock_products()
         sales = metrics.get_sales_month()
-        print(f"DEBUG - VENDAS MES: {sales}")
         owner = self.request.user.groups.filter(name="Owner").exists()
         context["orders_open"] = order_metrics_status["open"]
         context["orders_progress"] = order_metrics_status["progress"]
