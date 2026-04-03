@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View, generic
@@ -7,11 +8,12 @@ from .forms import CatalogItemForm
 from .models import CatalogItem
 
 
-class ProductListView(generic.ListView):
+class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = CatalogItem
     template_name = "products/product_list.html"
     paginate_by = 8
     context_object_name = "items"
+    permission_required = "products.view_products"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -42,16 +44,18 @@ class ProductListView(generic.ListView):
         return context
 
 
-class ProductDetailView(generic.DetailView):
+class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.DetailView):
     model = CatalogItem
     template_name = "products/product_detail.html"
     context_object_name = "product"
+    permission_required = "products.view_products"
 
 
-class ProductCreateView(generic.CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     model = CatalogItem
     template_name = "products/product_form.html"
     form_class = CatalogItemForm
+    permission_required = "products.add_products"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,10 +82,11 @@ class ProductCreateView(generic.CreateView):
         return reverse_lazy("products:list")
 
 
-class ProductUpdatedView(generic.UpdateView):
+class ProductUpdatedView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     model = CatalogItem
     template_name = "products/product_form.html"
     form_class = CatalogItemForm
+    permission_required = "products.change_products"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,7 +113,9 @@ class ProductUpdatedView(generic.UpdateView):
         return reverse_lazy("products:detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-class ProductDeleteView(View):
+class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "products.change_products"
+
     def post(self, request, pk):
         product = get_object_or_404(CatalogItem, pk=pk)  # noqa: F811
 

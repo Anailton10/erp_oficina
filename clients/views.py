@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View, generic
@@ -7,11 +8,12 @@ from .forms import ClientForm, VehicleForm
 from .models import Client, Vehicle
 
 
-class ListClientsView(generic.ListView):
+class ListClientsView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = Client
     template_name = "clients/clients_list.html"
     paginate_by = 10
     context_object_name = "clients"
+    permission_required = "clients.view_client"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -28,18 +30,24 @@ class ListClientsView(generic.ListView):
         return queryset
 
 
-class ListVehiclesView(generic.ListView):
+class ListVehiclesView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     model = Vehicle
     template_name = "vehicles/vehicles_list.html"
     context_object_name = "vehicles"
+    permission_required = "clients.view_vehicle"
 
     def get_queryset(self):
         return Vehicle.objects.filter(is_active=True, client__is_active=True)
 
 
-class ClientDetailView(generic.DetailView):
+class ClientDetailView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.DetailView,
+):
     model = Client
     template_name = "clients/client_detail.html"
+    permission_required = "clients.view_client"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -57,15 +65,25 @@ class ClientDetailView(generic.DetailView):
         return context
 
 
-class VehicleDetailView(generic.DetailView):
+class VehicleDetailView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.DetailView,
+):
     model = Vehicle
     template_name = "vehicles/vehicle_detail.html"
+    permission_required = "clients.view_vehicle"
 
 
-class CreateClientView(generic.CreateView):
+class CreateClientView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.CreateView,
+):
     model = Client
     form_class = ClientForm
     template_name = "clients/client_form.html"
+    permission_required = "clients.add_client"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -90,10 +108,15 @@ class CreateClientView(generic.CreateView):
         return reverse_lazy("clients:clients_list")
 
 
-class CreateVehicleView(generic.CreateView):
+class CreateVehicleView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.CreateView,
+):
     model = Vehicle
     form_class = VehicleForm
     template_name = "vehicles/vehicle_form.html"
+    permission_required = "clients.add_vehicle"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -125,10 +148,15 @@ class CreateVehicleView(generic.CreateView):
         )
 
 
-class UpdateClientView(generic.UpdateView):
+class UpdateClientView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.UpdateView,
+):
     model = Client
     form_class = ClientForm
     template_name = "clients/client_form.html"
+    permission_required = "clients.change_client"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -156,10 +184,15 @@ class UpdateClientView(generic.UpdateView):
         return reverse_lazy("clients:client_detail", kwargs={"pk": self.object.id})  # type: ignore
 
 
-class UpdateVehicleView(generic.UpdateView):
+class UpdateVehicleView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    generic.UpdateView,
+):
     model = Vehicle
     form_class = VehicleForm
     template_name = "vehicles/vehicle_form.html"
+    permission_required = "clients.change_vehicle"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -189,7 +222,9 @@ class UpdateVehicleView(generic.UpdateView):
         )
 
 
-class ClientDeleteView(View):
+class ClientDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "clients.change_client"
+
     def post(self, request, pk):
         client = get_object_or_404(Client, pk=pk)
 
@@ -203,7 +238,9 @@ class ClientDeleteView(View):
         return redirect("clients:clients_list")
 
 
-class VehicleDeleteView(View):
+class VehicleDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "clients.change_vehicle"
+
     def post(self, request, vehicle_id):
         vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
         client_id = vehicle.client.pk

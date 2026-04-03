@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
@@ -10,7 +11,9 @@ from ..models import Order, OrderItem
 from ..service import OrderService as service
 
 
-class AddOrderItemView(View):
+class AddOrderItemView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "orders.add_orderitem"
+
     def get(self, request, order_id):
         products = CatalogItem.objects.all()
         name = request.GET.get("name", "")
@@ -48,7 +51,9 @@ class AddOrderItemView(View):
             return HttpResponse(str(e), status=500)
 
 
-class DeleteOrderItemView(View):
+class DeleteOrderItemView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "orders.change_orderitem"
+
     def post(self, request, item_id):
         item_order = get_object_or_404(OrderItem, pk=item_id)
         order = item_order.order
@@ -62,7 +67,9 @@ class DeleteOrderItemView(View):
         return redirect("orders:order_detail", pk=order.pk)
 
 
-class UpdateOrderItemView(View):
+class UpdateOrderItemView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "orders.change_orderitem"
+
     def get(self, request, item_id):
         item = get_object_or_404(OrderItem, pk=item_id)
         form = OrderItemEditForm(instance=item)

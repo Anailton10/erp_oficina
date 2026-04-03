@@ -41,16 +41,21 @@
     </style>
   </head>
   <body>
-    <div class="sidebar">
-      <a href="{% url 'home' %}"><h5 class="mb-4">ERP Oficina</h5></a>
-      <a href="{% url 'clients:clients_list' %}"><i class="bi bi-people"></i> Clientes</a>
-      <a href="{% url 'orders:order_list' %}"><i class="bi bi-car-front"></i> Ordem de Serviço</a>
-      <a href="{% url 'products:list' %}"><i class="bi bi-box"></i> Catálogo</a>
-    </div>
+      <div class="sidebar">
+        <a href="{% url 'home' %}"><h5 class="mb-4">ERP Oficina</h5></a>
+        <a href="{% url 'clients:clients_list' %}"><i class="bi bi-people"></i> Clientes</a>
+        <a href="{% url 'orders:order_list' %}"><i class="bi bi-car-front"></i> Ordem de Serviço</a>
+        <a href="{% url 'products:list' %}"><i class="bi bi-box"></i> Catálogo</a>
+        <form action="{% url 'logout' %}" method="post" class="mt-4">
+          {% csrf_token %}
+          <button type="submit" class="btn w-100 text-start text-light border-0" style="background: transparent; padding: 10px; border-radius: 6px;"><i class="bi bi-box-arrow-left me-2"></i> Sair</button>
+        </form>
+      </div>
     <div class="content">
       {% include 'partials/_messages.html' %}
 
       {% block content %}
+        {% include "components/_metrics.html" %}
       {% endblock %}
     </div>
     <div id="modal-container"></div>

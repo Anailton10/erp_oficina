@@ -1,0 +1,135 @@
+<style>
+.dash-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.metric-label{font-size:12px;color:var(--color-text-secondary);margin:0 0 2px}
+.metric-value{font-size:26px;font-weight:500;margin:0;color:var(--color-text-primary)}
+.metric-value.green{color:var(--color-text-success)}
+.metric-value.blue{color:var(--color-text-info)}
+.card-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin:0}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:8px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.stock-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px}
+.stock-item:last-child{border-bottom:none}
+.badge-warn{background:#faeeda;color:#854f0b;font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px}
+.badge-ok{background:#eaf3de;color:#3b6d11;font-size:11px;font-weight:500;padding:2px 8px;border-radius:6px}
+</style>
+
+<div style="padding:1rem 0">
+
+  <!-- CARDS DE MÉTRICAS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px">
+
+    <div class="dash-card">
+      <p class="metric-label">Ordens abertas</p>
+      <p class="metric-value" id="v-open">{{ orders_open }}</p>
+    </div>
+
+    <div class="dash-card">
+      <p class="metric-label">Em andamento</p>
+      <p class="metric-value blue" id="v-prog">{{ orders_progress }}</p>
+    </div>
+
+    <div class="dash-card">
+      <p class="metric-label">Finalizadas no mês</p>
+      <p class="metric-value green" id="v-done">{{ orders_done_month }}</p>
+    </div>
+
+    <div class="dash-card">
+      <p class="metric-label">Clientes novos</p>
+      <p class="metric-value" id="v-cli">{{ clients_month }}</p>
+    </div>
+
+    <div class="dash-card">
+      <p class="metric-label">Vendas no mês</p>
+      <p class="metric-value green">R$ {{ sales }}</p>
+    </div>
+
+  </div>
+
+  <!-- GRÁFICO + ESTOQUE -->
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:start">
+
+    <!-- GRÁFICO -->
+    <div class="dash-card">
+      <div class="section-header">
+        <span class="card-title">Resumo do mês</span>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="dashChart"></canvas>
+      </div>
+    </div>
+
+    <!-- ESTOQUE BAIXO -->
+    {% if owner or request.user.is_superuser %}
+    <div class="dash-card">
+      <div class="section-header">
+        <span class="card-title">Estoque baixo</span>
+        <span class="badge-warn">{{ products_low|length }}</span>
+      </div>
+      {% if products_low %}
+        {% for product in products_low %}
+        <div class="stock-item">
+          <span style="color:var(--color-text-primary);max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            {{ product.name }}
+          </span>
+          {% if product.stock <= 5 %}
+            <span class="badge-warn">{{ product.stock }}</span>
+          {% else %}
+            <span class="badge-ok">{{ product.stock }}</span>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="font-size:13px;color:#3b6d11;margin:0">Tudo em dia</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  const isDark = document.documentElement.classList.contains('dark') ||
+                 window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  const textColor = isDark ? '#ccc' : '#555';
+  const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+
+  const open = parseInt(document.getElementById('v-open')?.textContent) || 0;
+  const prog = parseInt(document.getElementById('v-prog')?.textContent) || 0;
+  const done = parseInt(document.getElementById('v-done')?.textContent) || 0;
+  const cli  = parseInt(document.getElementById('v-cli')?.textContent) || 0;
+
+  new Chart(document.getElementById('dashChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Abertas', 'Andamento', 'Finalizadas', 'Clientes novos'],
+      datasets: [{
+        label: 'Quantidade',
+        data: [open, prog, done, cli],
+        backgroundColor: ['#378ADD', '#EF9F27', '#1D9E75', '#7F77DD'],
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        x: {
+          ticks: { color: textColor, font: { size: 12 } },
+          grid: { color: gridColor }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { color: textColor, font: { size: 12 }, precision: 0 },
+          grid: { color: gridColor }
+        }
+      }
+    }
+  });
+</script>
