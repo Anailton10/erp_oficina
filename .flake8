@@ -1,4 +1,4 @@
 [flake8]
 
-exclude = vemv
-ignore = E501
+exclude = venv
+ignore = E501, F401

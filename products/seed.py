@@ -1,6 +1,6 @@
 import csv
-from pathlib import Path
 from decimal import Decimal
+from pathlib import Path
 
 from .models import CatalogItem
 
@@ -8,7 +8,7 @@ from .models import CatalogItem
 def seed_catalog():
     file_path = Path(__file__).resolve().parent / "catalog_items.csv"
 
-    with open(file_path, newline='', encoding='utf-8') as file:
+    with open(file_path, newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
 
         for row in reader:
@@ -22,5 +22,5 @@ def seed_catalog():
                     "price": price,
                     "stock": stock,
                     "type": row["type"],
-                }
+                },
             )
