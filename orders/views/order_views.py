@@ -1,10 +1,9 @@
-import datetime as dt
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.views import View, generic
 from weasyprint import HTML
 
@@ -130,8 +129,7 @@ class OrderPDFView(LoginRequiredMixin, PermissionRequiredMixin, View):
     def get(self, request, order_id):
         # 1. buscar a OS
         order = get_object_or_404(Order, pk=order_id)
-        time_registration = dt.datetime.now().strftime("%d/%m/%y, %H:%M %p")
-        print(f"TESTE HORA: {time_registration}")
+        time_registration = timezone.now().strftime("%d/%m/%y, %H:%M %p")
         # 2. renderizar o template HTML com os dados
         html_string = render_to_string(
             "orders/partials/_order_pdf.html",

@@ -13,7 +13,7 @@ class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListV
     template_name = "products/product_list.html"
     paginate_by = 8
     context_object_name = "items"
-    permission_required = "products.view_products"
+    permission_required = "products.view_catalogitem"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -48,14 +48,14 @@ class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, generic.Det
     model = CatalogItem
     template_name = "products/product_detail.html"
     context_object_name = "product"
-    permission_required = "products.view_products"
+    permission_required = "products.view_catalogitem"
 
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     model = CatalogItem
     template_name = "products/product_form.html"
     form_class = CatalogItemForm
-    permission_required = "products.add_products"
+    permission_required = "products.add_catalogitem"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -69,9 +69,10 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, generic.Cre
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["type"] == "produto":
+        if form.cleaned_data["type"] == "PRODUTO":
             messages.success(self.request, "Produto criado com sucesso.")
-        messages.success(self.request, "Serviço criado com sucesso.")
+        else:
+            messages.success(self.request, "Serviço criado com sucesso.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -86,7 +87,7 @@ class ProductUpdatedView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
     model = CatalogItem
     template_name = "products/product_form.html"
     form_class = CatalogItemForm
-    permission_required = "products.change_products"
+    permission_required = "products.change_catalogitem"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,7 +115,7 @@ class ProductUpdatedView(LoginRequiredMixin, PermissionRequiredMixin, generic.Up
 
 
 class ProductDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = "products.change_products"
+    permission_required = "products.change_catalogitem"
 
     def post(self, request, pk):
         product = get_object_or_404(CatalogItem, pk=pk)  # noqa: F811

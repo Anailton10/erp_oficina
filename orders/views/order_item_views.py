@@ -15,7 +15,7 @@ class AddOrderItemView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = "orders.add_orderitem"
 
     def get(self, request, order_id):
-        products = CatalogItem.objects.all()
+        products = CatalogItem.objects.filter(is_active=True)
         name = request.GET.get("name", "")
         type = request.GET.get("type", "")
 

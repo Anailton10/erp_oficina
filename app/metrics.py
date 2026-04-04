@@ -23,7 +23,9 @@ def get_status_orders():
 
 def get_sales_month():
     now = timezone.now()
-    sales_month = Order.objects.filter(status="done", order_date__month=now.month)
+    sales_month = Order.objects.filter(
+        status="done", order_date__month=now.month, order_date__year=now.year
+    )
     sales_total = sum(order.total for order in sales_month)
     return dict(total=number_format(sales_total, decimal_pos=2, force_grouping=True))
 
