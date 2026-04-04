@@ -32,7 +32,9 @@ SECRET_KEY = config(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=True)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv(), default="localhost,127.0.0.1")
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS", cast=Csv(), default="http://localhost,http://127.0.0.1"
+)
 CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS", cast=Csv(), default="localhost,127.0.0.1"
 )
