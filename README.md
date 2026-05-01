@@ -1,86 +1,78 @@
 # ERP Oficina
 
 Sistema web para gestão de oficinas mecânicas de motos.
-
 O projeto permite controlar clientes, veículos, ordens de serviço e peças utilizadas em cada atendimento.
 
-O objetivo é ajudar pequenas oficinas a organizarem seus serviços e manterem o histórico de manutenção dos veículos.
+## Features
 
-## Features (Funcionalidades)
+- Cadastro de clientes e veículos
+- Cadastro de produtos e serviços
+- Ordens de serviço com cálculo automático de valor
+- Controle de estoque
+- Geração de PDF da OS
+- Dashboard
 
-- Cadastro de clientes
-- Cadastro de veículos
-- Cadastro de produtos
-- Criação de ordens de serviço
-- Cálculo automático do valor da ordem de serviço com base nos produtos adicionados
+## Tech Stack
 
-## Tech Stack (Tecnologias Utilizadas)
-
-- Python
-- Django
-- SQLite
+- Python / Django
+- PostgreSQL
+- Docker / Docker Compose
 - Bootstrap 5
-- Bootstrap Icons
 
 ## Run Locally
 
-Clone the project
-
 ```bash
 git clone https://github.com/Anailton10/erp_oficina.git
-```
-
-Go to the project directory
-
-```bash
 cd erp_oficina
-```
-
-Create a virtual environment
-
-```bash
 python -m venv venv
 ```
 
-Activate the virtual environment
-
-Windows:
+Ative o ambiente virtual:
 
 ```bash
+# Windows
 venv\Scripts\activate
-```
 
-Linux / Mac:
-
-```bash
+# Linux / Mac
 source venv/bin/activate
 ```
-
-Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run database migrations
+```bash
+cp .env-example .env
+# edite o .env com suas credenciais
+```
 
 ```bash
 python manage.py migrate
-```
-### Database Seed (Dados iniciais)
-
-O projeto possui comandos de seed para popular o banco com dados básicos (clientes, veículos e catálogo de produtos/serviços).
-
-Run command for seed Database
-``` bash
 python manage.py seed
-```
-
-Start the server
-
-```bash
 python manage.py runserver
 ```
+
+## Run with Docker
+
+```bash
+cp .env-example .env
+# edite o .env e defina DB_HOST=erp_db
+```
+
+```bash
+docker compose up -d
+```
+
+O container já executa `migrate`, `seed` e sobe o servidor automaticamente.
+
+Acesse em `http://127.0.0.1:8000`
+
+Para encerrar:
+
+```bash
+docker compose down
+```
+
 ## Roadmap
 
 - [x] Cadastro de clientes

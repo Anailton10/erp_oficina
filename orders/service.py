@@ -57,3 +57,10 @@ class OrderService:
             order_item.product.stock += order_item.quantity
         order_item.product.save()
         order_item.delete()
+
+
+class SeedWhatsappService:
+
+    @transaction.atomic
+    def seed_wpp():
+        pass

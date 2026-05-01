@@ -36,12 +36,12 @@
       <p class="metric-label">Clientes novos</p>
       <p class="metric-value" id="v-cli">{{ clients_month }}</p>
     </div>
-
-    <div class="dash-card">
-      <p class="metric-label">Vendas no mês</p>
-      <p class="metric-value green">R$ {{ sales }}</p>
-    </div>
-
+    {% if owner or request.user.is_superuser %}
+      <div class="dash-card">
+        <p class="metric-label">Vendas no mês</p>
+        <p class="metric-value green">R$ {{ sales }}</p>
+      </div>
+    {% endif %}
   </div>
 
   <!-- GRÁFICO + ESTOQUE -->
