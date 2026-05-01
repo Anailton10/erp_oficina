@@ -42,7 +42,7 @@ pip install -r requirements.txt
 ```
 
 ```bash
-cp .env-example .env
+cp .env_example .env
 # edite o .env com suas credenciais
 ```
 
@@ -55,7 +55,7 @@ python manage.py runserver
 ## Run with Docker
 
 ```bash
-cp .env-example .env
+cp .env_example .env
 # edite o .env e defina DB_HOST=erp_db
 ```
 
