@@ -5,10 +5,12 @@ cssselect2==0.9.0
 Django==5.2.12
 flake8==7.3.0
 fonttools==4.62.1
+gunicorn==25.3.0
 librt==0.8.1
 mccabe==0.7.0
 mypy==1.19.1
 mypy_extensions==1.1.0
+packaging==26.2
 pathspec==1.0.4
 pillow==12.1.1
 psycopg2-binary==2.9.12
